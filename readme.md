@@ -5,16 +5,16 @@ pySDNN
 - PP・MLP・SDNNのpythonによる実装
 
 ## 特徴
-- scikit-learnのフォーマットで学習・実行が可能
+- scikit-learn形式でモデルの学習・実行が可能
 - 純python製
-- docker内のjupyter notebookを用いてブラウザ上で動作可能
+- docker内のjupyter notebookを用いることによってブラウザ上で動作可能
 
 
 ## インストール方法
 予めpython(3.×)がインストールされていることを確認して下さい.
 
 依存ライブラリのインストール中にエラーが生じることがあります.  
-その場合は場合は主要ライブラリをオールインワンでインストールすることができる
+場合は主要ライブラリをオールインワンでインストールすることができる
 [anaconda](https://www.continuum.io/)
 を使うことにより回避することができる場合があります.
 
@@ -32,17 +32,15 @@ pySDNN
 `$ python setup.py install`
 
 
-## jupyter-notebookからSDNNを使う
-仮想環境構築ソフトdockerを用いることによって,インストールすることなく,
-SDNNを使うことができます.
+## ブラウザからSDNNを使う
+仮想環境構築ソフトdockerを用いることによって本パッケージをインストールすることなく,SDNNを使うことができます.
 
-
-### 1. 準備
+### 1. Dockerのインストール
 
 [docker](https://docs.docker.com/engine/installation/)をインストール
 
 
-### 2. Docker imageのダウンロード
+### 2. Docker イメージのダウンロード
 
 `$ docker pull gatakaba/pySDNN`
 
@@ -50,10 +48,10 @@ SDNNを使うことができます.
 
 ### 3. Dockerコンテナの起動
 
-`$  docker run -it sdnn /bin/bash`
+`$  docker run -d -p 5000:8080 pySDNN`
 
 
 #### 4. サーバに接続
 
-ブラウザを使って`localhost:5000`にアクセス
+ブラウザのアドレスバーに`localhost:5000`を打ち込み,jupyter notebookにアクセス
 
