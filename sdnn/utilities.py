@@ -1,7 +1,6 @@
 # coding:utf-8
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def linear(X):
@@ -22,7 +21,9 @@ def nonaka(X):
         else:
             t.append(
                 (1 + x[0]) / 2.0 * np.sin(6 * np.pi * x[0] ** 0.5 * x[1] ** 2) ** 2)
-    return np.array(t)
+    t = np.array(t)
+
+    return t
 
 
 def wave(X):

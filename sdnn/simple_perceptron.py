@@ -1,11 +1,10 @@
 # coding:utf-8
 
 """
-TODO : 妥当な終了条件を定める
+simple perceptron
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 from base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
 
@@ -43,7 +42,7 @@ class SimplePerceptron(BaseEstimator):
 
             E_{p} = - \Sigma_{n} \mathbf{w}^{y} \mathbf{\phi(x_n)} y_{n}
 
-        w_{\tau+1} = w_{\tau} − \tau \nabla Ep(w) = w{\tau} + \tau \phi(xn) y_{n}
+            w_{\tau+1} = w_{\tau} − \tau \nabla Ep(w) = w{\tau} + \tau \phi(xn) y_{n}
 
 
         Parameters
@@ -90,3 +89,4 @@ class SimplePerceptron(BaseEstimator):
         intercepted_X = BaseEstimator.add_columns(X)
         y = np.sign(np.dot(intercepted_X, self.w))
         return y
+

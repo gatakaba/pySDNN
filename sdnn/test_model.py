@@ -1,13 +1,16 @@
 import numpy as np
 import utilities
 import matplotlib.pyplot as plt
-from multi_layer_perceptron_pattern import MultiLayerPerceptronPatternRegression
+
+from multi_layer_perceptron import MultiLayerPerceptronRegression
+from sdnn import SDNN
+from parallel_perceptron import ParallelPerceptron
 
 
-def test_model(clf, n_samples=200):
+def test_model(clf, n_samples=2000):
     test_function = utilities.nonaka
     # test_function = utilities.linear
-    test_function = utilities.cylinder
+    # test_function = utilities.cylinder
 
     train_X = np.random.uniform(0, 1, size=[n_samples, 2])
     train_y = test_function(train_X)
@@ -26,5 +29,7 @@ def test_model(clf, n_samples=200):
 
 
 if __name__ == "__main__":
-    clf = MultiLayerPerceptronPatternRegression()
+    # clf = MultiLayerPerceptronRegression()
+    # clf = SDNN()
+    clf = ParallelPerceptron()
     test_model(clf)
