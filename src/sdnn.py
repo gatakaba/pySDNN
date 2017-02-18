@@ -7,9 +7,10 @@ for more information.
 
 import numpy as np
 
-from base import BaseEstimator
+from .base import BaseEstimator
+from .coding import SelectiveDesensitization
+
 from sklearn.utils.validation import check_X_y, check_is_fitted
-from coding import SelectiveDesensitization
 
 
 class SDNN(BaseEstimator):

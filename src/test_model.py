@@ -1,7 +1,8 @@
 import numpy as np
-import utilities
+
 import matplotlib.pyplot as plt
 
+import utilities
 from multi_layer_perceptron import MultiLayerPerceptronRegression
 from sdnn import SDNN
 from parallel_perceptron import ParallelPerceptron
