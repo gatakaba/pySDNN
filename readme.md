@@ -47,7 +47,7 @@ pySDNN
 
 ### 3. Dockerコンテナの起動
 
-`$  docker run -d -p 5000:8080 pySDNN`
+`$  docker run -d -p 5000:8888 pysdnn jupyter-notebook`
 
 
 #### 4. サーバに接続
