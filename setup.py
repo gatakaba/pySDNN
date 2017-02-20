@@ -9,7 +9,7 @@ def main():
         name='pySDNN',
         install_requires=requirement_list,
         version='0.1',
-        package_dir={'pySDNN': 'src'},
+        package_dir={'pySDNN': 'pysdnn'},
         description='Selective Desensitization Neural Network implemented in python',
         author='Yu Kabasawa',
         #packages=find_packages(),

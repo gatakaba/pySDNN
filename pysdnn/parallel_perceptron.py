@@ -4,7 +4,7 @@ PP
 
 """
 import numpy as np
-from base import BaseEstimator
+from .base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
 
 

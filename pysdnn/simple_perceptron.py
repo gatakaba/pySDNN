@@ -5,7 +5,7 @@ simple perceptron
 """
 
 import numpy as np
-from base import BaseEstimator
+from .base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
 
 
@@ -37,8 +37,7 @@ class SimplePerceptron(BaseEstimator):
 
     def fit(self, X, y):
 
-        """
-        Fit linear model with perceptron criterion.
+        """Fit linear model with perceptron criterion.
 
             E_{p} = - \Sigma_{n} \mathbf{w}^{y} \mathbf{\phi(x_n)} y_{n}
 
