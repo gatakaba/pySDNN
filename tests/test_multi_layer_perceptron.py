@@ -1,7 +1,7 @@
 import numpy as np
 import unittest
 
-from multi_layer_perceptron import MultiLayerPerceptronRegression
+from pysdnn.multi_layer_perceptron import MultiLayerPerceptronRegression
 
 
 class Test_MultiLayerPerceptronRegression(unittest.TestCase):
