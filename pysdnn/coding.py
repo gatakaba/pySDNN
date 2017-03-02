@@ -7,8 +7,8 @@ class PatternCoding(object):
 
     パターンは以下の条件を満たす
     * 重複が無い
-    * -1と1が均等になる
-    * 次元ごとに異なるパターンを持つ
+    * -1と1の数の数が等しい
+    * 入力次元ごとに異なるパターンを持つ
     """
 
     def __init__(self, binary_vector_dim, division_num, reversal_num=1):
@@ -27,12 +27,12 @@ class PatternCoding(object):
         self.reversal_num = reversal_num
 
     def _make_binary_vector_table(self):
-        """make binary vector table
+        """バイナリべエクトルが格納されているテーブルを作成
 
         Returns
         -------
-        binary_vector_table : list
-           listの中身は-1,1の1d array
+        binary_vector_table : array, shape = (division_num,binary_vector_dim)
+
         """
 
         binary_vector_table = []
@@ -41,7 +41,7 @@ class PatternCoding(object):
         np.random.shuffle(binary_vector)
         binary_vector_table.append(binary_vector)
 
-        for i in range(self.division_num):
+        while len(binary_vector_table) < self.division_num:
             while True:
                 tmp_binary_vector = np.copy(binary_vector_table[-1])
                 # select reverse index
@@ -54,13 +54,17 @@ class PatternCoding(object):
                 # reverse selected index
                 tmp_binary_vector[index] *= -1
 
+                # if tmp_binary_vector is included in binary_vector_table, add to binary_vector_table
                 if not any((tmp_binary_vector == x).all() for x in binary_vector_table):
-                    # if tmp_binary_vector is included in binary_vector_table, add to binary_vector_table
                     binary_vector_table.append(tmp_binary_vector)
                     break
-        return binary_vector_table
+
+        return np.array(binary_vector_table)
 
     def make_binary_vector_tables(self, n_features):
+        """make binary vector tables
+
+        """
         self.n_features = n_features
         self.binary_vector_tables = []
         for i in range(self.n_features):
