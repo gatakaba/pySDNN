@@ -4,11 +4,12 @@ PP
 
 """
 import numpy as np
-from .base import BaseEstimator
+from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
+from pysdnn.utilities import add_columns
 
 
-class ParallelPerceptron(BaseEstimator):
+class PP(BaseEstimator):
     def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
         self.W = None
         self.n_samples = None
@@ -19,7 +20,8 @@ class ParallelPerceptron(BaseEstimator):
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
 
-    def hidden_function(self, x):
+    @staticmethod
+    def hidden_function(x):
         return (np.sign(x) + 1) / 2.0
 
     def activate_function(self, x):
@@ -63,7 +65,7 @@ class ParallelPerceptron(BaseEstimator):
     def fit(self, X, y):
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
-        intercepted_X = BaseEstimator.add_columns(X)
+        intercepted_X = add_columns(X)
 
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
         self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features + 1])
@@ -89,7 +91,7 @@ class ParallelPerceptron(BaseEstimator):
     def predict(self, X):
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
-        intercepted_X = BaseEstimator.add_columns(X)
+        intercepted_X = add_columns(X)
 
         for intercepted_x in intercepted_X:
             a = np.dot(self.W, intercepted_x)

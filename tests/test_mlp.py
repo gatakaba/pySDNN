@@ -1,11 +1,12 @@
 import numpy as np
 import unittest
+import numpy as np
 
 from pysdnn import MLP
 from sklearn.utils.estimator_checks import check_estimator
 
 
-class Test_MultiLayerPerceptronRegression(unittest.TestCase):
+class Test_MLP(unittest.TestCase):
     def setUp(self):
         # make sample data
         n_train_samples = 200
