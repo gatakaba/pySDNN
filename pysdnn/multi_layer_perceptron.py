@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.utils.validation import check_X_y, check_is_fitted
-
+from pysdnn.utilities import add_columns
 
 
 class MLP(BaseEstimator, RegressorMixin):
