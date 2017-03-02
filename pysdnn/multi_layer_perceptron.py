@@ -7,11 +7,10 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from sklearn.utils.validation import check_X_y, check_is_fitted
-from .coding import PatternCoding
-import utilities
+from pysdnn.utilities import add_columns
 
 
-class MultiLayerPerceptronRegression(BaseEstimator, RegressorMixin):
+class MLP(BaseEstimator, RegressorMixin):
     def __init__(self, hidden_layer_num=100, eta=0.01, verbose=False):
         self.W1 = None
         self.W2 = None
@@ -19,32 +18,32 @@ class MultiLayerPerceptronRegression(BaseEstimator, RegressorMixin):
         self.hidden_layer_num = hidden_layer_num
         self.verbose = verbose
 
-        self.param1 = None
-        self.param2 = None
-
-    def hidden_function(self, x):
+    @staticmethod
+    def hidden_function(x):
         return np.tanh(x)
 
-    def hidden_differential_function(self, x):
-        return 1 - self.hidden_function(x) ** 2
+    @staticmethod
+    def hidden_differential_function(x):
+        return 1 - np.tanh(x) ** 2
 
-    def activate_function(self, x):
+    @staticmethod
+    def activate_function(x):
         return x
 
     def get_params(self, deep=True):
         return {'hidden_layer_num': self.hidden_layer_num, 'eta': self.eta, 'verbose': self.verbose}
 
-    def fit(self, X, y):
+    def fit(self, X, y, n_iter=100):
 
         X, y = check_X_y(X, y, multi_output=False)
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
         n_samples, n_features = X.shape
 
-        intercepted_X = utilities.add_columns(X)
+        intercepted_X = add_columns(X)
         self.W1 = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features + 1])
         self.W2 = np.random.normal(0, 1, size=[1, self.hidden_layer_num + 1])
 
-        for j in range(1000):
+        for j in range(n_iter):
             for i in range(n_samples):
                 # feedforward
                 a1 = np.dot(self.W1, intercepted_X[i])
@@ -71,7 +70,7 @@ class MultiLayerPerceptronRegression(BaseEstimator, RegressorMixin):
         prediction_list = []
         if X.ndim == 1:
             X = np.atleast_2d(X)
-        intercepted_X = utilities.add_columns(X)
+        intercepted_X = add_columns(X)
         for intercepted_x in intercepted_X:
             h = np.dot(self.W1, intercepted_x)
             z = self.hidden_function(h)

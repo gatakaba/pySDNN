@@ -7,8 +7,9 @@ for more information.
 
 import numpy as np
 
-from .base import BaseEstimator
-from .coding import SelectiveDesensitization
+from sklearn.base import BaseEstimator
+from sklearn.base import RegressorMixin
+from pysdnn.coding import SelectiveDesensitization
 
 from sklearn.utils.validation import check_X_y, check_is_fitted
 
@@ -24,7 +25,8 @@ class SDNN(BaseEstimator):
         self.b = -0.2
         self.pattern_manager = SelectiveDesensitization(binary_vector_dim=100, division_num=100, reversal_num=1)
 
-    def hidden_function(self, x):
+    @staticmethod
+    def hidden_function(x):
         return (np.sign(x) + 1) / 2.0
 
     def activate_function(self, x):
