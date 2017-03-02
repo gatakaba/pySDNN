@@ -2,6 +2,10 @@ import numpy as np
 import unittest
 
 from pysdnn.multi_layer_perceptron import MultiLayerPerceptronRegression
+from sklearn.utils.estimator_checks import check_estimator
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 
 class Test_MultiLayerPerceptronRegression(unittest.TestCase):
@@ -23,3 +27,9 @@ class Test_MultiLayerPerceptronRegression(unittest.TestCase):
     def test_predict(self):
         self.mlpr.fit(self.train_X, self.train_y)
         self.mlpr.predict(self.test_X)
+
+    """
+    def test_estimator(self):
+        check_estimator(MultiLayerPerceptronRegression)
+
+    """
