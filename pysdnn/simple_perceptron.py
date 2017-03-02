@@ -5,11 +5,13 @@ simple perceptron
 """
 
 import numpy as np
-from .base import BaseEstimator
+from sklearn.base import BaseEstimator
+from sklearn.base import RegressorMixin
 from sklearn.utils.validation import check_X_y, check_is_fitted
+from pysdnn.utilities import add_columns
 
 
-class SimplePerceptron(BaseEstimator):
+class SP(BaseEstimator, RegressorMixin):
     """
     simple perceptron model
         f(x) = sign(<w, x>)
@@ -60,7 +62,7 @@ class SimplePerceptron(BaseEstimator):
         X, y = check_X_y(X, y, multi_output=False)
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
         n_samples, n_features = X.shape
-        intercepted_X = BaseEstimator.add_columns(X)
+        intercepted_X = add_columns(X)
         self.w = np.random.normal(0, 1, size=n_features + 1)
 
         for i in range(1000):
@@ -85,7 +87,6 @@ class SimplePerceptron(BaseEstimator):
             The predicted values.
         """
         check_is_fitted(self, ["X_train_", "y_train_"])
-        intercepted_X = BaseEstimator.add_columns(X)
+        intercepted_X = add_columns(X)
         y = np.sign(np.dot(intercepted_X, self.w))
         return y
-
