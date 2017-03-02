@@ -15,23 +15,26 @@ class PatternCoding(object):
         """
         Parameters
         ----------
-        binary_vector_dim :int
+        binary_vector_dim : int
             バイナリベクトルの次元数
-        division_num
+        division_num : int
             実数の分割数
-        reversal_num
+        reversal_num : int
             反転数
         """
         self.binary_vector_dim = binary_vector_dim
         self.division_num = division_num
         self.reversal_num = reversal_num
 
-    def _make_binary_vector_table(self):
-        """バイナリべエクトルが格納されているテーブルを作成
+        self.feature_dim = None
+        self.binary_vector_table = None
+
+    def _make_binary_vector_table_1d(self):
+        """バイナリべクトルが格納されているテーブルを作成
 
         Returns
         -------
-        binary_vector_table : array, shape = (division_num,binary_vector_dim)
+        binary_vector_table : ndarray, shape = (division_num,binary_vector_dim)
 
         """
 
@@ -61,14 +64,27 @@ class PatternCoding(object):
 
         return np.array(binary_vector_table)
 
-    def make_binary_vector_tables(self, n_features):
-        """make binary vector tables
+    def make_binary_vector_table(self, feature_dim):
+        """make binary vector table
 
+        binary_vector_table : ndarray, shape = (feature_dim,division_num ,binary_vector_dim)
+
+        Parameters
+        ----------
+        feature_dim : int
+            input feature dimension
+
+        Returns
+        -------
+        self : returns an instance of self
         """
-        self.n_features = n_features
-        self.binary_vector_tables = []
-        for i in range(self.n_features):
-            self.binary_vector_tables.append(self._make_binary_vector_table())
+
+        self.feature_dim = feature_dim
+        self.binary_vector_table = []
+        for i in range(self.feature_dim):
+            self.binary_vector_table.append(self._make_binary_vector_table_1d())
+        self.binary_vector_table = np.stack(self.binary_vector_table)
+
         return self
 
     def num_to_pattern(self, X):
@@ -81,16 +97,17 @@ class PatternCoding(object):
 
         Returns
         -------
-        out : ndarray
+        out : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)
 
-        TODO : サイズのチェック
         """
 
         if X.ndim == 1:
             pattern_list = []
-            for i, element in enumerate(X):
+            for feature_index, element in enumerate(X):
                 index = int(np.floor(element * self.division_num))
-                pattern_list.append(self.binary_vector_tables[i][index])
+
+                pattern_list.append(self.binary_vector_table[feature_index, index])
+
             return np.ravel(pattern_list)
 
         elif X.ndim == 2:
@@ -104,7 +121,7 @@ class PatternCoding(object):
                 matrix_list.append(np.ravel(pattern_list))
             return np.array(matrix_list)
         else:
-            return None
+            raise ValueError('input data dimensions must be 1d or 2d')
 
 
 class SelectiveDesensitization(PatternCoding):
