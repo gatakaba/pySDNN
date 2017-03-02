@@ -1,6 +1,26 @@
 # coding:utf-8
 
 import numpy as np
+from sklearn.utils.validation import check_X_y, check_is_fitted, check_array
+
+
+def add_columns(X):
+    """ add Intercept
+
+    Parameters
+    ----------
+     X : array-like, shape = (n_samples, n_features)
+            Input array
+
+    Returns
+    -------
+    intercepted_X : array of shape = (n_samples, n_features + 1)
+            Intercepted array
+    """
+
+    X = check_array(X)
+    intercepted_X = np.c_[np.ones(len(X)), X]
+    return intercepted_X
 
 
 def linear(X):
