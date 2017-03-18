@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pysdnn  documentation" href="index.html"/>
         <link rel="prev" title="Welcome to pysdnn’s documentation!" href="index.html"/> 
 
@@ -83,11 +80,11 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pysdnn package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.base">pysdnn.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pysdnn-base-module">pysdnn.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.coding">pysdnn.coding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.multi_layer_perceptron">pysdnn.multi_layer_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.parallel_perceptron">pysdnn.parallel_perceptron module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.sdnn">pysdnn.sdnn module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pysdnn-sdnn-module">pysdnn.sdnn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.simple_perceptron">pysdnn.simple_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.utilities">pysdnn.utilities module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn">Module contents</a></li>
@@ -127,7 +124,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/pysdnn.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/pysdnn.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -142,44 +139,48 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-pysdnn.base">
-<span id="pysdnn-base-module"></span><h2>pysdnn.base module<a class="headerlink" href="#module-pysdnn.base" title="Permalink to this headline">¶</a></h2>
-<p>Base classes for all estimators.</p>
-<dl class="class">
-<dt id="pysdnn.base.BaseEstimator">
-<em class="property">class </em><code class="descclassname">pysdnn.base.</code><code class="descname">BaseEstimator</code><a class="reference internal" href="_modules/pysdnn/base.html#BaseEstimator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base.BaseEstimator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Base class for all estimators</p>
-<p class="rubric">Methods</p>
-<dl class="staticmethod">
-<dt id="pysdnn.base.BaseEstimator.add_columns">
-<em class="property">static </em><code class="descname">add_columns</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base.html#BaseEstimator.add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base.BaseEstimator.add_columns" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.base.BaseEstimator.score">
-<code class="descname">score</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base.html#BaseEstimator.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base.BaseEstimator.score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="pysdnn-base-module">
+<h2>pysdnn.base module<a class="headerlink" href="#pysdnn-base-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pysdnn.coding">
 <span id="pysdnn-coding-module"></span><h2>pysdnn.coding module<a class="headerlink" href="#module-pysdnn.coding" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2017 Yu Kabasawa</p>
+<p>This is licensed under an MIT license. See the readme.MD file
+for more information.</p>
 <dl class="class">
 <dt id="pysdnn.coding.PatternCoding">
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>PatternCodingは実数とバイナリベクトルの対応関係を管理する</p>
-<p>パターンは以下の条件を満たす
-* 重複が無い
-* -1と1が均等になる
-* 次元ごとに異なるパターンを持つ</p>
+<p>PatternCodingクラスは実数とコードパターンの対応関係を管理する</p>
+<p>コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次のような射影関係がある</p>
+<p>パターンは以下の条件を満たす</p>
+<ul class="simple">
+<li>重複が無い</li>
+<li>-1と1の数の数が等しい</li>
+<li>入力次元ごとに異なるパターンを持つ</li>
+</ul>
 <p class="rubric">Methods</p>
 <dl class="method">
-<dt id="pysdnn.coding.PatternCoding.make_binary_vector_tables">
-<code class="descname">make_binary_vector_tables</code><span class="sig-paren">(</span><em>n_features</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.make_binary_vector_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.make_binary_vector_tables" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pysdnn.coding.PatternCoding.make_binary_vector_table">
+<code class="descname">make_binary_vector_table</code><span class="sig-paren">(</span><em>feature_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.make_binary_vector_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.make_binary_vector_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>make binary vector table</p>
+<p>binary_vector_table : ndarray, shape = (feature_dim,division_num ,binary_vector_dim)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_dim</strong> : int</p>
+<blockquote>
+<div><p>input feature dimension</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>self</strong> : returns an instance of self</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pysdnn.coding.PatternCoding.num_to_pattern">
@@ -189,12 +190,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : ndarray</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : ndarray</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : ndarray</p>
-<p class="last"><strong>TODO</strong> : サイズのチェック</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</td>
 </tr>
 </tbody>
 </table>
@@ -236,33 +234,38 @@
 <span id="pysdnn-multi-layer-perceptron-module"></span><h2>pysdnn.multi_layer_perceptron module<a class="headerlink" href="#module-pysdnn.multi_layer_perceptron" title="Permalink to this headline">¶</a></h2>
 <p>mlp</p>
 <dl class="class">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression">
-<em class="property">class </em><code class="descclassname">pysdnn.multi_layer_perceptron.</code><code class="descname">MultiLayerPerceptronRegression</code><span class="sig-paren">(</span><em>hidden_layer_num=100</em>, <em>eta=0.01</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pysdnn.base.BaseEstimator" title="pysdnn.base.BaseEstimator"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base.BaseEstimator</span></code></a></p>
+<dt id="pysdnn.multi_layer_perceptron.MLP">
+<em class="property">class </em><code class="descclassname">pysdnn.multi_layer_perceptron.</code><code class="descname">MLP</code><span class="sig-paren">(</span><em>hidden_layer_num=100</em>, <em>eta=0.01</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.RegressorMixin</span></code></p>
 <p class="rubric">Methods</p>
-<dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.activate_function">
-<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.activate_function" title="Permalink to this definition">¶</a></dt>
+<dl class="staticmethod">
+<dt id="pysdnn.multi_layer_perceptron.MLP.activate_function">
+<em class="property">static </em><code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.activate_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.fit" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.multi_layer_perceptron.MLP.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>n_iter=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.fit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.hidden_differential_function">
-<code class="descname">hidden_differential_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression.hidden_differential_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.hidden_differential_function" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.multi_layer_perceptron.MLP.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.get_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="pysdnn.multi_layer_perceptron.MLP.hidden_differential_function">
+<em class="property">static </em><code class="descname">hidden_differential_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.hidden_differential_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.hidden_differential_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="pysdnn.multi_layer_perceptron.MLP.hidden_function">
+<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.hidden_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.hidden_function">
-<code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.hidden_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MultiLayerPerceptronRegression.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MultiLayerPerceptronRegression.predict" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.multi_layer_perceptron.MLP.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.predict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -272,83 +275,48 @@
 <span id="pysdnn-parallel-perceptron-module"></span><h2>pysdnn.parallel_perceptron module<a class="headerlink" href="#module-pysdnn.parallel_perceptron" title="Permalink to this headline">¶</a></h2>
 <p>PP</p>
 <dl class="class">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron">
-<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">ParallelPerceptron</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pysdnn.base.BaseEstimator" title="pysdnn.base.BaseEstimator"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base.BaseEstimator</span></code></a></p>
+<dt id="pysdnn.parallel_perceptron.PP">
+<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">PP</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p class="rubric">Methods</p>
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron.activate_function">
-<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron.activate_function" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.parallel_perceptron.PP.activate_function">
+<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.activate_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron.fit" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.parallel_perceptron.PP.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="pysdnn.parallel_perceptron.PP.hidden_function">
+<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.hidden_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron.hidden_function">
-<code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron.hidden_function" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.parallel_perceptron.PP.inverse_activate_function">
+<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron.inverse_activate_function">
-<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.parallel_perceptron.ParallelPerceptron.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#ParallelPerceptron.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.ParallelPerceptron.predict" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.parallel_perceptron.PP.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.predict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-pysdnn.sdnn">
-<span id="pysdnn-sdnn-module"></span><h2>pysdnn.sdnn module<a class="headerlink" href="#module-pysdnn.sdnn" title="Permalink to this headline">¶</a></h2>
-<p>Copyright (C) 2017 Yu Kabasawa</p>
-<p>This is licensed under an MIT license. See the readme.MD file
-for more information.</p>
-<dl class="class">
-<dt id="pysdnn.sdnn.SDNN">
-<em class="property">class </em><code class="descclassname">pysdnn.sdnn.</code><code class="descname">SDNN</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pysdnn.base.BaseEstimator" title="pysdnn.base.BaseEstimator"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base.BaseEstimator</span></code></a></p>
-<p class="rubric">Methods</p>
-<dl class="method">
-<dt id="pysdnn.sdnn.SDNN.activate_function">
-<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN.activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.sdnn.SDNN.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.sdnn.SDNN.hidden_function">
-<code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN.hidden_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.sdnn.SDNN.inverse_activate_function">
-<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.sdnn.SDNN.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sdnn.html#SDNN.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sdnn.SDNN.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="pysdnn-sdnn-module">
+<h2>pysdnn.sdnn module<a class="headerlink" href="#pysdnn-sdnn-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pysdnn.simple_perceptron">
 <span id="pysdnn-simple-perceptron-module"></span><h2>pysdnn.simple_perceptron module<a class="headerlink" href="#module-pysdnn.simple_perceptron" title="Permalink to this headline">¶</a></h2>
 <p>simple perceptron</p>
 <dl class="class">
-<dt id="pysdnn.simple_perceptron.SimplePerceptron">
-<em class="property">class </em><code class="descclassname">pysdnn.simple_perceptron.</code><code class="descname">SimplePerceptron</code><span class="sig-paren">(</span><em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SimplePerceptron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SimplePerceptron" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pysdnn.base.BaseEstimator" title="pysdnn.base.BaseEstimator"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base.BaseEstimator</span></code></a></p>
+<dt id="pysdnn.simple_perceptron.SP">
+<em class="property">class </em><code class="descclassname">pysdnn.simple_perceptron.</code><code class="descname">SP</code><span class="sig-paren">(</span><em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.RegressorMixin</span></code></p>
 <dl class="docutils">
 <dt>simple perceptron model</dt>
 <dd>f(x) = sign(&lt;w, x&gt;)</dd>
@@ -367,8 +335,8 @@ for more information.</p>
 </table>
 <p class="rubric">Methods</p>
 <dl class="method">
-<dt id="pysdnn.simple_perceptron.SimplePerceptron.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SimplePerceptron.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SimplePerceptron.fit" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.simple_perceptron.SP.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SP.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit linear model with perceptron criterion.</p>
 <blockquote>
 <div><p>E_{p} = - Sigma_{n} mathbf{w}^{y} mathbf{phi(x_n)} y_{n}</p>
@@ -385,8 +353,8 @@ for more information.</p>
 <div><p>Train samples.</p>
 </div></blockquote>
 <dl class="docutils">
-<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = (n_samples)</span></dt>
-<dd><p class="first last">Target values for X.</p>
+<dt>y</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = (n_samples)</span><dd><p class="first last">Target values for X.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -400,8 +368,8 @@ for more information.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.simple_perceptron.SimplePerceptron.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SimplePerceptron.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SimplePerceptron.predict" title="Permalink to this definition">¶</a></dt>
+<dt id="pysdnn.simple_perceptron.SP.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/simple_perceptron.html#SP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.simple_perceptron.SP.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict regression target for X.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -428,6 +396,30 @@ for more information.</p>
 </div>
 <div class="section" id="module-pysdnn.utilities">
 <span id="pysdnn-utilities-module"></span><h2>pysdnn.utilities module<a class="headerlink" href="#module-pysdnn.utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pysdnn.utilities.add_columns">
+<code class="descclassname">pysdnn.utilities.</code><code class="descname">add_columns</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utilities.html#add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utilities.add_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>add Intercept</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (n_samples, n_features)</p>
+<blockquote>
+<div><p>Input array</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercepted_X</strong> : array of shape = (n_samples, n_features + 1)</p>
+<blockquote class="last">
+<div><p>Intercepted array</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="pysdnn.utilities.cylinder">
 <code class="descclassname">pysdnn.utilities.</code><code class="descname">cylinder</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utilities.html#cylinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utilities.cylinder" title="Permalink to this definition">¶</a></dt>

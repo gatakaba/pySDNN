@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="pysdnn  documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
@@ -127,41 +124,56 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pysdnn.coding</h1><div class="highlight"><pre>
-<span></span><span class="c1"># coding:utf-8</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Copyright (C) 2017 Yu Kabasawa</span>
+
+<span class="sd">This is licensed under an MIT license. See the readme.MD file</span>
+<span class="sd">for more information.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="PatternCoding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding">[docs]</a><span class="k">class</span> <span class="nc">PatternCoding</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;PatternCodingは実数とバイナリベクトルの対応関係を管理する</span>
+    <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とコードパターンの対応関係を管理する</span>
+
+<span class="sd">    コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次のような射影関係がある</span>
 
 <span class="sd">    パターンは以下の条件を満たす</span>
-<span class="sd">    * 重複が無い</span>
-<span class="sd">    * -1と1が均等になる</span>
-<span class="sd">    * 次元ごとに異なるパターンを持つ</span>
+
+<span class="sd">    - 重複が無い</span>
+<span class="sd">    - -1と1の数の数が等しい</span>
+<span class="sd">    - 入力次元ごとに異なるパターンを持つ</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;PatternCodingインスタンスを作成する.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        binary_vector_dim :int</span>
+<span class="sd">        binary_vector_dim : int</span>
 <span class="sd">            バイナリベクトルの次元数</span>
-<span class="sd">        division_num</span>
+<span class="sd">        division_num : int</span>
 <span class="sd">            実数の分割数</span>
-<span class="sd">        reversal_num</span>
+<span class="sd">        reversal_num : int</span>
 <span class="sd">            反転数</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_dim</span> <span class="o">=</span> <span class="n">binary_vector_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span> <span class="o">=</span> <span class="n">division_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span> <span class="o">=</span> <span class="n">reversal_num</span>
 
-    <span class="k">def</span> <span class="nf">_make_binary_vector_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;make binary vector table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">_make_binary_vector_table_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;バイナリべクトルが格納されているテーブルを作成</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        binary_vector_table : list</span>
-<span class="sd">           listの中身は-1,1の1d array</span>
+<span class="sd">        binary_vector_table : ndarray, shape = (division_num,binary_vector_dim)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">binary_vector_table</span> <span class="o">=</span> <span class="p">[]</span>
@@ -170,30 +182,47 @@
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">binary_vector</span><span class="p">)</span>
         <span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">binary_vector</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">):</span>
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
                 <span class="n">tmp_binary_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                 <span class="c1"># select reverse index</span>
                 <span class="n">index1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
                 <span class="n">index2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="n">index1</span> <span class="o">+</span> <span class="n">index2</span>
 
                 <span class="c1"># reverse selected index</span>
                 <span class="n">tmp_binary_vector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
 
+                <span class="c1"># if tmp_binary_vector is included in binary_vector_table, add to binary_vector_table</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">binary_vector_table</span><span class="p">):</span>
-                    <span class="c1"># if tmp_binary_vector is included in binary_vector_table, add to binary_vector_table</span>
                     <span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_binary_vector</span><span class="p">)</span>
                     <span class="k">break</span>
-        <span class="k">return</span> <span class="n">binary_vector_table</span>
 
-<div class="viewcode-block" id="PatternCoding.make_binary_vector_tables"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.make_binary_vector_tables">[docs]</a>    <span class="k">def</span> <span class="nf">make_binary_vector_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_features</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_tables</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_binary_vector_table</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PatternCoding.make_binary_vector_table"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.make_binary_vector_table">[docs]</a>    <span class="k">def</span> <span class="nf">make_binary_vector_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;make binary vector table</span>
+
+<span class="sd">        binary_vector_table : ndarray, shape = (feature_dim,division_num ,binary_vector_dim)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feature_dim : int</span>
+<span class="sd">            input feature dimension</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="o">=</span> <span class="n">feature_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_binary_vector_table_1d</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="PatternCoding.num_to_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.num_to_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">num_to_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
@@ -206,16 +235,17 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out : ndarray</span>
+<span class="sd">        out : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</span>
 
-<span class="sd">        TODO : サイズのチェック</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">feature_index</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_tables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">feature_index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -225,11 +255,11 @@
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                     <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
 
-                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_tables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
                 <span class="n">matrix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix_list</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data dimensions must be 1d or 2d&#39;</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SelectiveDesensitization"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization">[docs]</a><span class="k">class</span> <span class="nc">SelectiveDesensitization</span><span class="p">(</span><span class="n">PatternCoding</span><span class="p">):</span>
@@ -260,7 +290,7 @@
             <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_tables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
             <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">pattern2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>

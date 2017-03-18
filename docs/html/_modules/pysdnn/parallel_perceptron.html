@@ -30,9 +30,6 @@
   
 
   
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="pysdnn  documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
@@ -132,30 +129,32 @@
 <span class="sd">PP</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
-<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="kn">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">pysdnn.utilities</span> <span class="kn">import</span> <span class="n">add_columns</span>
 
 
-<div class="viewcode-block" id="ParallelPerceptron"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron">[docs]</a><span class="k">class</span> <span class="nc">ParallelPerceptron</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="PP"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP">[docs]</a><span class="k">class</span> <span class="nc">PP</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span> <span class="o">=</span> <span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
 
-<div class="viewcode-block" id="ParallelPerceptron.hidden_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron.hidden_function">[docs]</a>    <span class="k">def</span> <span class="nf">hidden_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="PP.hidden_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.hidden_function">[docs]</a>    <span class="k">def</span> <span class="nf">hidden_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span></div>
 
-<div class="viewcode-block" id="ParallelPerceptron.activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron.activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="PP.activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
         <span class="k">return</span> <span class="n">y</span></div>
 
-<div class="viewcode-block" id="ParallelPerceptron.inverse_activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron.inverse_activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="PP.inverse_activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.inverse_activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
@@ -189,10 +188,10 @@
         <span class="n">index_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">index_list</span>
 
-<div class="viewcode-block" id="ParallelPerceptron.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="PP.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">BaseEstimator</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
@@ -212,13 +211,13 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">index_list</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)</span> <span class="o">*</span> <span class="n">intercepted_X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span><span class="p">))</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ParallelPerceptron.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.ParallelPerceptron.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="PP.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_train_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_train_&quot;</span><span class="p">])</span>
         <span class="n">prediction_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">BaseEstimator</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">intercepted_x</span> <span class="ow">in</span> <span class="n">intercepted_X</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">intercepted_x</span><span class="p">)</span>

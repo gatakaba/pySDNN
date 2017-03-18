@@ -19,8 +19,10 @@
 #
 # import os
 import sys
-
-sys.path.insert(0, '/Users/kaba32/notebook/pySDNN')
+import os
+#sys.path.insert(0, '/home/kaba/program/pySDNN')
+#sys.path.insert(0, '/home/kaba/program/pySDNN')
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- General configuration ------------------------------------------------
 
