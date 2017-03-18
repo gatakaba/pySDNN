@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-このモジュールの説明
-"""
+#! /usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import unittest
 import numpy as np
 from pysdnn.coding import PatternCoding
-
-
-# from pysdnn.coding import SelectiveDesensitization
+from pysdnn.coding import SelectiveDesensitization
 
 
 class TestCoding(unittest.TestCase):

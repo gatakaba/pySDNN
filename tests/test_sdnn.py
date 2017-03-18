@@ -1,3 +1,6 @@
+#! /usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import numpy as np
 import unittest
 
@@ -5,7 +8,7 @@ from pysdnn import SDNN
 from sklearn.utils.estimator_checks import check_estimator
 
 
-class Test_SDNNRegression(unittest.TestCase):
+class TestSDNN(unittest.TestCase):
     def setUp(self):
         # make sample data
         n_train_samples = 200
