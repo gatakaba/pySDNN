@@ -1,20 +1,35 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
+""" Copyright (C) 2017 Yu Kabasawa
+
+This is licensed under an MIT license. See the readme.MD file
+for more information.
+"""
 
 import numpy as np
 
 
 class PatternCoding(object):
-    """PatternCodingは実数とバイナリベクトルの対応関係を管理する
+    """ PatternCodingクラスは実数とコードパターンの対応関係を管理する
+
+    コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次のような射影関係がある
+
+
+
+    連続な変数の値を多次元ベクトル
+    二値{-1,1}の
 
     パターンは以下の条件を満たす
-    * 重複が無い
-    * -1と1の数の数が等しい
-    * 入力次元ごとに異なるパターンを持つ
+
+    - 重複が無い
+    - -1と1の数の数が等しい
+    - 入力次元ごとに異なるパターンを持つ
     """
 
+
     def __init__(self, binary_vector_dim, division_num, reversal_num=1):
-        """
+        """PatternCodingインスタンスを作成する.
+
         Parameters
         ----------
         binary_vector_dim : int
