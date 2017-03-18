@@ -72,7 +72,7 @@ class SDNN(BaseEstimator):
         X, y = check_X_y(X, y, multi_output=False)
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
 
-        self.pattern_manager.make_binary_vector_tables(X.shape[1])
+        self.pattern_manager.make_binary_vector_table(X.shape[1])
         patterned_X = self.pattern_manager.num_to_sd_pattern(X)
         n_samples, n_features = patterned_X.shape
 
