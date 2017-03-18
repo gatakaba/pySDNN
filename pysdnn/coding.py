@@ -117,7 +117,7 @@ class PatternCoding(object):
                 for i, element in enumerate(x):
                     index = int(np.floor(element * self.division_num))
 
-                    pattern_list.append(self.binary_vector_tables[i][index])
+                    pattern_list.append(self.binary_vector_table[i][index])
                 matrix_list.append(np.ravel(pattern_list))
             return np.array(matrix_list)
         else:
@@ -152,7 +152,7 @@ class SelectiveDesensitization(PatternCoding):
             pattern_list = []
             for i, element in enumerate(x):
                 index = int(np.floor(element * self.division_num))
-                pattern_list.append(self.binary_vector_tables[i][index])
+                pattern_list.append(self.binary_vector_table[i][index])
             sd_pattern = []
             for i, pattern1 in enumerate(pattern_list):
                 for j, pattern2 in enumerate(pattern_list):

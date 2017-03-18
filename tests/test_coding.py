@@ -1,11 +1,16 @@
-# coding:utf-8
+# -*- coding: utf-8 -*-
+"""
+このモジュールの説明
+"""
 import unittest
 import numpy as np
 from pysdnn.coding import PatternCoding
-from pysdnn.coding import SelectiveDesensitization
 
 
-class Test_Coding(unittest.TestCase):
+# from pysdnn.coding import SelectiveDesensitization
+
+
+class TestCoding(unittest.TestCase):
     def setUp(self):
         self.binary_vector_dim = 8
         self.division_num = 6

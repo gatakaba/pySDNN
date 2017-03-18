@@ -1,6 +1,6 @@
 import numpy as np
 import unittest
-import numpy as np
+
 
 from pysdnn import MLP
 from sklearn.utils.estimator_checks import check_estimator
