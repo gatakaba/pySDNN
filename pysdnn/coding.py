@@ -10,9 +10,15 @@ import numpy as np
 
 
 class PatternCoding(object):
-    """ PatternCodingクラスは実数とコードパターンの対応関係を管理する
+    """ PatternCodingは実数とコードパターンの対応関係の管理を行うクラスです.
 
-    コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次のような射影関係がある
+
+    コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次の射影関係があります.
+
+    .. math::
+
+       (a + b)^2 = a^2 + 2ab + b^2
+
 
     パターンは以下の条件を満たす
 
@@ -42,7 +48,7 @@ class PatternCoding(object):
         self.binary_vector_table = None
 
     def _make_binary_vector_table_1d(self):
-        """バイナリべクトルが格納されているテーブルを作成
+        """バイナリべクトルが格納されているテーブルを作成する.
 
         Returns
         -------

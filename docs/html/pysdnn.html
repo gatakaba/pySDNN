@@ -151,8 +151,10 @@ for more information.</p>
 <dt id="pysdnn.coding.PatternCoding">
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>PatternCodingクラスは実数とコードパターンの対応関係を管理する</p>
-<p>コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次のような射影関係がある</p>
+<p>PatternCodingは実数とコードパターンの対応関係の管理を行うクラスです.</p>
+<p>コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次の射影関係があります.</p>
+<div class="math">
+\[(a + b)^2 = a^2 + 2ab + b^2\]</div>
 <p>パターンは以下の条件を満たす</p>
 <ul class="simple">
 <li>重複が無い</li>
