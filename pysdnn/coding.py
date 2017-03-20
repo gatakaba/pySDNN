@@ -4,6 +4,7 @@
 
 This is licensed under an MIT license. See the readme.md file
 for more information.
+
 """
 
 import numpy as np
@@ -13,58 +14,69 @@ class PatternCoding(object):
     """ PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.
 
 
-    コードパターンとは :math:`\{-1,1\}` を要素とする:math:`M` 次元ベクトルを指し,
+    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指し,
     コーディングとは実数をコードパターンに変換する事を指します.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
-    コーディングの出力結果は :math:`N M` 次元ベクトルです.
+    コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.
 
     コードパターンは以下の条件を満たす.
 
     - 入力次元ごとに異なるパターンを持つ
     - 重複が無い
     - -1と1の数の数が等しい
+
+    Parameters
+    ----------
+    code_pattern_dim : int
+        コードパターンベクトルの次元数 n
+    input_division_num : int
+        実数の分割数 q
+    reversal_num : int
+        反転数 r
+    input_dim : int
+        入力データの次元数 N
     """
 
-    def __init__(self, code_pattern_dim, input_division_num, reversal_num=1):
-        """PatternCodingインスタンスを作成する.
-
-        Parameters
-        ----------
-        code_pattern_dim : int
-            コードパターンの次元数 n
-        input_division_num : int
-            実数の分割数 q
-        reversal_num : int
-            反転数 r
-        """
-
+    def __init__(self, code_pattern_dim, input_division_num, reversal_num, input_dim):
         self.code_pattern_dim = code_pattern_dim
         self.input_division_num = input_division_num
         self.reversal_num = reversal_num
-        # 入力次元数
-        self.input_dim = None
-        # コードパターン shape = (input_dim,code_pattern_dim)
-        self.code_pattern_table = None
 
-    def _make_binary_vector_table_1d(self):
-        """コードパターンが格納されているテーブルを作成する.
+        self.input_dim = input_dim
+        # コードパターン対応表 shape = (self.input_dim, self.division_num, self.code_pattern_dim)
+        self.code_pattern_table = []
+
+        self._create_code_pattern_table()
+
+    def _create_code_pattern_table(self):
+        """実数とコードパターンの対応表を作成する"""
+
+        for i in range(self.input_dim):
+            self.code_pattern_table.append(self._create_code_pattern())
+
+        self.code_pattern_table = np.stack(self.code_pattern_table)
+
+        return None
+
+    def _create_code_pattern(self):
+        """コードパターンを作成する
 
         Returns
         -------
-        code_pattern_table : ndarray, shape = (division_num,code_pattern_dim)
+        code_pattern : ndarray, shape = (division_num,code_pattern_dim)
 
         """
 
-        code_pattern_table = []
+        code_pattern = []
         binary_vector = np.ones(self.code_pattern_dim)
         binary_vector[:int(self.code_pattern_dim / 2)] = -1
         np.random.shuffle(binary_vector)
-        code_pattern_table.append(binary_vector)
+        code_pattern.append(binary_vector)
 
-        while len(code_pattern_table) < self.input_division_num:
+        while len(code_pattern) < self.input_division_num:
             while True:
-                tmp_binary_vector = np.copy(code_pattern_table[-1])
+                tmp_binary_vector = np.copy(code_pattern[-1])
                 # select reverse index
                 index1 = list(
                     np.random.choice(np.where(tmp_binary_vector == -1)[0], size=self.reversal_num, replace=False))
@@ -75,39 +87,15 @@ class PatternCoding(object):
                 # reverse selected index
                 tmp_binary_vector[index] *= -1
 
-                # if tmp_binary_vector is included in code_pattern_table, add to code_pattern_table
-                if not any((tmp_binary_vector == x).all() for x in code_pattern_table):
-                    code_pattern_table.append(tmp_binary_vector)
+                # if tmp_binary_vector is included in code_pattern, add to code_pattern
+                if not any((tmp_binary_vector == x).all() for x in code_pattern):
+                    code_pattern.append(tmp_binary_vector)
                     break
 
-        return np.array(code_pattern_table)
-
-    def make_code_pattern_table(self, input_dim):
-        """実数とコードパターンの対応表を作成
-
-        code_pattern_table : ndarray, shape = (input_dim,division_num ,coding_pattern_dim)
-
-        Parameters
-        ----------
-        input_dim : int
-            入力次元数
-
-        Returns
-        -------
-        self : returns an instance of self
-        """
-
-        self.input_dim = input_dim
-        self.code_pattern_table = []
-        for i in range(self.input_dim):
-            self.code_pattern_table.append(self._make_binary_vector_table_1d())
-        self.code_pattern_table = np.stack(self.code_pattern_table)
-
-        return self
+        return np.array(code_pattern)
 
     def coding(self, X):
-        """
-        convert real number to binary vector
+        """ コードパターン表から入力された実数に対応するコードパターンを取得する
 
         Parameters
         ----------
@@ -116,7 +104,7 @@ class PatternCoding(object):
 
         Returns
         -------
-        out : ndarray, shape =(binary_vector_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)
+        code_pattern : ndarray, shape =(binary_vector_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)
 
         """
 
@@ -138,7 +126,8 @@ class PatternCoding(object):
 
                     pattern_list.append(self.code_pattern_table[i][index])
                 matrix_list.append(np.ravel(pattern_list))
-            return np.array(matrix_list)
+            code_pattern = np.array(matrix_list)
+            return code_pattern
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
 
