@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="pysdnn  documentation" href="index.html"/>
         <link rel="prev" title="Welcome to pysdnn’s documentation!" href="index.html"/> 
 
@@ -124,7 +127,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/pysdnn.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/pysdnn.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -145,23 +148,44 @@
 <div class="section" id="module-pysdnn.coding">
 <span id="pysdnn-coding-module"></span><h2>pysdnn.coding module<a class="headerlink" href="#module-pysdnn.coding" title="Permalink to this headline">¶</a></h2>
 <p>Copyright (C) 2017 Yu Kabasawa</p>
-<p>This is licensed under an MIT license. See the readme.MD file
+<p>This is licensed under an MIT license. See the readme.md file
 for more information.</p>
 <dl class="class">
 <dt id="pysdnn.coding.PatternCoding">
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>PatternCodingは実数とコードパターンの対応関係の管理を行うクラスです.</p>
-<p>コードパターンとは{-1,1}を要素とする多次元ベクトルであり,次の射影関係があります.</p>
-<div class="math">
-\[(a + b)^2 = a^2 + 2ab + b^2\]</div>
-<p>パターンは以下の条件を満たす</p>
+<p>PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</p>
+<p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする:math:<cite>M</cite> 次元ベクトルを指し,
+コーディングとは実数をコードパターンに変換する事を指します.</p>
+<p>PatternCodingクラスでは <span class="math">\(N\)</span> 次元の実数ベクトルを一括して扱い,
+コーディングの出力結果は <span class="math">\(N M\)</span> 次元ベクトルです.</p>
+<p>コードパターンは以下の条件を満たします.</p>
 <ul class="simple">
+<li><dl class="first docutils">
+<dt>入力次元ごとに異なるパターンを持つ</dt>
+<dd>-hoge</dd>
+</dl>
+</li>
 <li>重複が無い</li>
 <li>-1と1の数の数が等しい</li>
-<li>入力次元ごとに異なるパターンを持つ</li>
 </ul>
 <p class="rubric">Methods</p>
+<dl class="method">
+<dt id="pysdnn.coding.PatternCoding.coding">
+<code class="descname">coding</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.coding" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert real number to binary vector</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : ndarray</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pysdnn.coding.PatternCoding.make_binary_vector_table">
 <code class="descname">make_binary_vector_table</code><span class="sig-paren">(</span><em>feature_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.make_binary_vector_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.make_binary_vector_table" title="Permalink to this definition">¶</a></dt>
@@ -184,41 +208,29 @@ for more information.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="pysdnn.coding.PatternCoding.num_to_pattern">
-<code class="descname">num_to_pattern</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.num_to_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.num_to_pattern" title="Permalink to this definition">¶</a></dt>
-<dd><p>convert real number to binary vector</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : ndarray</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="pysdnn.coding.SelectiveDesensitization">
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">SelectiveDesensitization</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pysdnn.coding.PatternCoding" title="pysdnn.coding.PatternCoding"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.coding.PatternCoding</span></code></a></p>
-<p>パターンを選択的不感化する</p>
+<p>パターンを選択的不感化する
+.. math:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>\<span class="n">phi</span> <span class="p">:</span> <span class="n">x</span> \<span class="n">mapsto</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">p</span><span class="p">}</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <dl class="method">
 <dt id="pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">
 <code class="descname">num_to_sd_pattern</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization.num_to_sd_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern" title="Permalink to this definition">¶</a></dt>
-<dd><p>選択的不感化したパターンを返す
-:param X:
-:type X: array, shape = (n_features,)</p>
+<dd><p>選択的不感化したパターンを返す</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>sd_pattern</strong> : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array, shape = (n_features,)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>sd_pattern</strong> : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</td>
 </tr>
 </tbody>
 </table>
@@ -355,8 +367,8 @@ for more information.</p>
 <div><p>Train samples.</p>
 </div></blockquote>
 <dl class="docutils">
-<dt>y</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = (n_samples)</span><dd><p class="first last">Target values for X.</p>
+<dt>y <span class="classifier-delimiter">:</span> <span class="classifier">array-like, shape = (n_samples)</span></dt>
+<dd><p class="first last">Target values for X.</p>
 </dd>
 </dl>
 </div></blockquote>
