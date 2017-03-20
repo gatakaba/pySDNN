@@ -152,56 +152,59 @@
 for more information.</p>
 <dl class="class">
 <dt id="pysdnn.coding.PatternCoding">
-<em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>code_pattern_dim</em>, <em>input_division_num</em>, <em>reversal_num</em>, <em>input_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</p>
-<p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする:math:<cite>M</cite> 次元ベクトルを指し,
+<p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする <span class="math">\(M\)</span> 次元ベクトルを指し,
 コーディングとは実数をコードパターンに変換する事を指します.</p>
 <p>PatternCodingクラスでは <span class="math">\(N\)</span> 次元の実数ベクトルを一括して扱い,
-コーディングの出力結果は <span class="math">\(N M\)</span> 次元ベクトルです.</p>
-<p>コードパターンは以下の条件を満たします.</p>
+コーディングの出力結果は <span class="math">\(N \times M\)</span> 次元ベクトルです.</p>
+<p>コードパターンは以下の条件を満たす.</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>入力次元ごとに異なるパターンを持つ</dt>
-<dd>-hoge</dd>
-</dl>
-</li>
+<li>入力次元ごとに異なるパターンを持つ</li>
 <li>重複が無い</li>
 <li>-1と1の数の数が等しい</li>
 </ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>code_pattern_dim</strong> : int</p>
+<blockquote>
+<div><p>コードパターンの次元数 n</p>
+</div></blockquote>
+<p><strong>input_division_num</strong> : int</p>
+<blockquote>
+<div><p>実数の分割数 q</p>
+</div></blockquote>
+<p><strong>reversal_num</strong> : int</p>
+<blockquote>
+<div><p>反転数 r</p>
+</div></blockquote>
+<p><strong>input_dim</strong> : int</p>
+<blockquote class="last">
+<div><p>入力次元数 N</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Methods</p>
 <dl class="method">
 <dt id="pysdnn.coding.PatternCoding.coding">
 <code class="descname">coding</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.coding" title="Permalink to this definition">¶</a></dt>
-<dd><p>convert real number to binary vector</p>
+<dd><p>実数をコードパターンに変換する</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : ndarray</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.coding.PatternCoding.make_binary_vector_table">
-<code class="descname">make_binary_vector_table</code><span class="sig-paren">(</span><em>feature_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.make_binary_vector_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.make_binary_vector_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>make binary vector table</p>
-<p>binary_vector_table : ndarray, shape = (feature_dim,division_num ,binary_vector_dim)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>feature_dim</strong> : int</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : ndarray</p>
 <blockquote>
-<div><p>input feature dimension</p>
+<div><p>入力データ</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>self</strong> : returns an instance of self</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>code_pattern</strong> : ndarray, shape =(binary_vector_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)</p>
 </td>
 </tr>
 </tbody>

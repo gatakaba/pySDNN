@@ -133,6 +133,7 @@
 
 <span class="sd">This is licensed under an MIT license. See the readme.md file</span>
 <span class="sd">for more information.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -142,57 +143,71 @@
     <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</span>
 
 
-<span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする:math:`M` 次元ベクトルを指し,</span>
+<span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指し,</span>
 <span class="sd">    コーディングとは実数をコードパターンに変換する事を指します.</span>
 
 <span class="sd">    PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,</span>
-<span class="sd">    コーディングの出力結果は :math:`N M` 次元ベクトルです.</span>
+<span class="sd">    コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.</span>
 
-<span class="sd">    コードパターンは以下の条件を満たします.</span>
+<span class="sd">    コードパターンは以下の条件を満たす.</span>
 
 <span class="sd">    - 入力次元ごとに異なるパターンを持つ</span>
-<span class="sd">        -hoge</span>
 <span class="sd">    - 重複が無い</span>
 <span class="sd">    - -1と1の数の数が等しい</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code_pattern_dim : int</span>
+<span class="sd">        コードパターンの次元数 n</span>
+<span class="sd">    input_division_num : int</span>
+<span class="sd">        実数の分割数 q</span>
+<span class="sd">    reversal_num : int</span>
+<span class="sd">        反転数 r</span>
+<span class="sd">    input_dim : int</span>
+<span class="sd">        入力次元数 N</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;PatternCodingインスタンスを作成する.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        binary_vector_dim : int</span>
-<span class="sd">            バイナリベクトルの次元数</span>
-<span class="sd">        division_num : int</span>
-<span class="sd">            実数の分割数</span>
-<span class="sd">        reversal_num : int</span>
-<span class="sd">            反転数</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_dim</span> <span class="o">=</span> <span class="n">binary_vector_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span> <span class="o">=</span> <span class="n">division_num</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_pattern_dim</span><span class="p">,</span> <span class="n">input_division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span> <span class="o">=</span> <span class="n">code_pattern_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">=</span> <span class="n">input_division_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span> <span class="o">=</span> <span class="n">reversal_num</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># 入力次元数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span> <span class="o">=</span> <span class="n">input_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_make_binary_vector_table_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;バイナリべクトルが格納されているテーブルを作成する.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_code_pattern_table</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_create_code_pattern_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;実数とコードパターンの対応表を作成&quot;&quot;&quot;</span>
+
+        <span class="c1"># コードパターン shape = (self.input_dim, self.division_num, self.code_pattern_dim)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># 実数とコードパターンの対応表を作成</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_code_pattern</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_create_code_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;コードパターンを作成</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        binary_vector_table : ndarray, shape = (division_num,binary_vector_dim)</span>
+<span class="sd">        code_pattern_table : ndarray, shape = (division_num,code_pattern_dim)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">binary_vector_table</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">binary_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_dim</span><span class="p">)</span>
-        <span class="n">binary_vector</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">code_pattern_table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">binary_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span><span class="p">)</span>
+        <span class="n">binary_vector</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">binary_vector</span><span class="p">)</span>
-        <span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">binary_vector</span><span class="p">)</span>
+        <span class="n">code_pattern_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">binary_vector</span><span class="p">)</span>
 
-        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">:</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_pattern_table</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">:</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">tmp_binary_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">tmp_binary_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                 <span class="c1"># select reverse index</span>
                 <span class="n">index1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
@@ -203,56 +218,33 @@
                 <span class="c1"># reverse selected index</span>
                 <span class="n">tmp_binary_vector</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
 
-                <span class="c1"># if tmp_binary_vector is included in binary_vector_table, add to binary_vector_table</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">binary_vector_table</span><span class="p">):</span>
-                    <span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_binary_vector</span><span class="p">)</span>
+                <span class="c1"># if tmp_binary_vector is included in code_pattern_table, add to code_pattern_table</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">tmp_binary_vector</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">code_pattern_table</span><span class="p">):</span>
+                    <span class="n">code_pattern_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_binary_vector</span><span class="p">)</span>
                     <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">binary_vector_table</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PatternCoding.make_binary_vector_table"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.make_binary_vector_table">[docs]</a>    <span class="k">def</span> <span class="nf">make_binary_vector_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_dim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;make binary vector table</span>
-
-<span class="sd">        binary_vector_table : ndarray, shape = (feature_dim,division_num ,binary_vector_dim)</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        feature_dim : int</span>
-<span class="sd">            input feature dimension</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        self : returns an instance of self</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span> <span class="o">=</span> <span class="n">feature_dim</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_dim</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_binary_vector_table_1d</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">code_pattern_table</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PatternCoding.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        convert real number to binary vector</span>
+        <span class="sd">&quot;&quot;&quot; 実数をコードパターンに変換する</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        X : ndarray</span>
+<span class="sd">            入力データ</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out : ndarray, shape =(binary_vector_dim * feature_dim),(binary_vector_dim * feature_dim,input_data_num)</span>
+<span class="sd">        code_pattern : ndarray, shape =(binary_vector_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">feature_index</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
 
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">feature_index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">feature_index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
 
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
 
@@ -261,11 +253,12 @@
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
                 <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
 
-                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
                 <span class="n">matrix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix_list</span><span class="p">)</span>
+            <span class="n">code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix_list</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">code_pattern</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data dimensions must be 1d or 2d&#39;</span><span class="p">)</span></div></div>
 
@@ -305,7 +298,7 @@
             <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binary_vector_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
             <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">pattern2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
