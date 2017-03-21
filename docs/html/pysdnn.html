@@ -223,7 +223,7 @@ for more information.</p>
 
 <dl class="class">
 <dt id="pysdnn.coding.SelectiveDesensitization">
-<em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">SelectiveDesensitization</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">SelectiveDesensitization</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num</em>, <em>input_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pysdnn.coding.PatternCoding" title="pysdnn.coding.PatternCoding"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.coding.PatternCoding</span></code></a></p>
 <p>SelectiveDesensitizationクラスは実数と選択的不感化されたコードパターンの対応関係の管理を行うクラスです.</p>
 <p>選択的不感化とは二つのパターンコード <span class="math">\(\mathbf{p}_{i}\)</span> , <span class="math">\(\mathbf{p}_{j}\)</span> を以下の式に従って変換を行う操作です.</p>
@@ -257,8 +257,32 @@ for more information.</p>
 <p class="rubric">Methods</p>
 <dl class="method">
 <dt id="pysdnn.coding.SelectiveDesensitization.coding">
-<code class="descname">coding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization.coding" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">coding</code><span class="sig-paren">(</span><em>X</em>, <em>low=0</em>, <em>high=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization.coding" title="Permalink to this definition">¶</a></dt>
+<dd><p>選択的不感化されたコードパターンを出力する</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : ndarray, shape = (input_dim,) or (sample_num,input_dim)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+<p><strong>low</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
+<blockquote>
+<div><p>入力値の下限</p>
+</div></blockquote>
+<p><strong>high</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
+<blockquote>
+<div><p>入力値の上限</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>sd_code_pattern</strong> : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">
@@ -270,15 +294,15 @@ for more information.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array, shape = (n_features,)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>sd_pattern</strong> : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>sd_code_pattern</strong> : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern">
-<code class="descname">pattern_to_sd_pattern</code><span class="sig-paren">(</span><em>pattern1</em>, <em>pattern2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization.pattern_to_sd_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">pattern_to_sd_pattern</code><span class="sig-paren">(</span><em>pattern1</em>, <em>pattern2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization.pattern_to_sd_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

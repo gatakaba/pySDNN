@@ -338,21 +338,35 @@
 <span class="sd">        入力データの次元数 N</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SelectiveDesensitization.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
+    <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="SelectiveDesensitization.pattern_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">pattern_to_sd_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern1</span><span class="p">,</span> <span class="n">pattern2</span><span class="p">):</span>
         <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">pattern1</span><span class="p">)</span> <span class="o">*</span> <span class="n">pattern2</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="k">return</span> <span class="n">sd_pattern</span></div>
 
-<div class="viewcode-block" id="SelectiveDesensitization.num_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">num_to_sd_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectiveDesensitization.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 選択的不感化されたコードパターンを出力する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
+<span class="sd">            入力データ</span>
+<span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の下限</span>
+<span class="sd">        high : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の上限</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SelectiveDesensitization.num_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">num_to_sd_pattern</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        選択的不感化したパターンを返す</span>
-
-
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -360,7 +374,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sd_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</span>
+<span class="sd">        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sd_pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>

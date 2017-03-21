@@ -209,21 +209,50 @@ class SelectiveDesensitization(PatternCoding):
         入力データの次元数 N
     """
 
-    def __init__(self, binary_vector_dim, division_num, reversal_num=1):
-        super().__init__(binary_vector_dim, division_num, reversal_num)
+    def __init__(self, binary_vector_dim, division_num, reversal_num, input_dim):
+        super().__init__(binary_vector_dim, division_num, reversal_num, input_dim)
 
-    def coding(self):
+    @staticmethod
+    def _pattern_to_sd_pattern(code_pattern1, code_pattern2):
+        """ pattern2を用いてpattern1の不感化を行う
+
+        Parameters
+        ----------
+        pattern1 : ndarray, shape = (code_pattern_dim,)
+            subject pattern
+        pattern2 : ndarray, shape =  (code_pattern_dim,)
+            context pattern
+
+        Returns
+        -------
+        sp_pattern : ndarray, shape = (code_pattern_dim,)
+            pattern1 selective desensitizated by pattern2
+
+        """
+        sd_code_pattern = (1 + code_pattern1) * code_pattern2 / 2.0
+        return sd_code_pattern
+
+    def coding(self, X, low=0, high=1):
+        """ 選択的不感化されたコードパターンを出力する
+
+        Parameters
+        ----------
+        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)
+            入力データ
+        low : int or float or ndarray, shape =(input_dim,), optional
+            入力値の下限
+        high : int or float or ndarray, shape =(input_dim,), optional
+            入力値の上限
+
+        Returns
+        -------
+        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)
+        """
         pass
 
-    def pattern_to_sd_pattern(self, pattern1, pattern2):
-        sd_pattern = (1 + pattern1) * pattern2 / 2.0
-        return sd_pattern
-
-    def num_to_sd_pattern(self, X):
+    def num_to_sd_pattern(X):
         """
         選択的不感化したパターンを返す
-
-
 
         Parameters
         ----------
@@ -231,7 +260,7 @@ class SelectiveDesensitization(PatternCoding):
 
         Returns
         -------
-        sd_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)
+        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)
         """
         sd_pattern_list = []
         for x in X:
