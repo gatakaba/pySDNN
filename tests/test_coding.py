@@ -20,6 +20,11 @@ class TestCoding(unittest.TestCase):
         assert self.pc._create_code_pattern().shape == (self.division_num, self.code_pattern_dim)
         assert self.pc.code_pattern_table.shape == (self.input_dim, self.division_num, self.code_pattern_dim)
 
+    def test_coding_scalar_input(self):
+        pc = PatternCoding(self.code_pattern_dim, self.division_num, self.reversal_num, 1)
+        x = np.array(np.random.random())
+        assert pc.coding(x).shape == (self.code_pattern_dim,)
+
     def test_coding_1d(self):
         x = np.random.random(size=self.input_dim)
         assert self.pc.coding(x).shape == (self.code_pattern_dim * self.input_dim,)
