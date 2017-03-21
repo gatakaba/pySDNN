@@ -18,11 +18,22 @@ class TestCoding(unittest.TestCase):
 
     def test_code_pattern_size(self):
         assert self.pc._create_code_pattern().shape == (self.division_num, self.code_pattern_dim)
-
         assert self.pc.code_pattern_table.shape == (self.input_dim, self.division_num, self.code_pattern_dim)
 
-    def test_coding(self):
-        # check 1d
+    def test_coding_1d(self):
         x = np.random.random(size=self.input_dim)
-        # check size
         assert self.pc.coding(x).shape == (self.code_pattern_dim * self.input_dim,)
+
+    def test_coding_2d(self):
+        n_samples = 10
+        x = np.random.random(size=[n_samples, self.input_dim])
+        self.pc.coding(x)
+        n_samples = 10
+        x = np.random.random(size=[n_samples, self.input_dim])
+        self.pc.coding(x)
+        # assert self.pc.coding(x).shape == (self.code_pattern_dim * self.input_dim,)
+
+    """
+    def test_coding_input_domain(self):
+        pass
+    """
