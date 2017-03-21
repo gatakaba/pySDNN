@@ -28,9 +28,6 @@ class TestCoding(unittest.TestCase):
         n_samples = 10
         x = np.random.random(size=[n_samples, self.input_dim])
         self.pc.coding(x)
-        n_samples = 10
-        x = np.random.random(size=[n_samples, self.input_dim])
-        self.pc.coding(x)
         # assert self.pc.coding(x).shape == (self.code_pattern_dim * self.input_dim,)
 
     """

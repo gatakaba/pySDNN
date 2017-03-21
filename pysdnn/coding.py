@@ -93,13 +93,27 @@ class PatternCoding(object):
 
         return np.array(code_pattern)
 
-    def coding(self, X):
+    @staticmethod
+    def real_to_index(x):
+        """入力値からパターン対応表のインデックスを取得する"""
+        return None
+
+    def coding(self, X, low=0, high=1):
         """ 入力値をコードパターンに変換する
+
+        入力値の値域を引数low,highによって設定することができます.
+        入力値がlowよりも小さい場合,入力値がlowとした場合の値を出力します
+        入力値がhighよりも大きい場合,入力値がhighとした場合の値を出力します
 
         Parameters
         ----------
         X : ndarray, shape = (input_dim,) or (sample_num,input_dim)
             入力データ
+        lower : float, optional
+            入力値下限
+
+        high : float, optional
+            入力値上限
 
         Returns
         -------
@@ -122,7 +136,6 @@ class PatternCoding(object):
                 pattern_list = []
                 for i, element in enumerate(x):
                     index = int(np.floor(element * self.input_division_num))
-
                     pattern_list.append(self.code_pattern_table[i][index])
                 matrix_list.append(np.ravel(pattern_list))
             code_pattern = np.array(matrix_list)
