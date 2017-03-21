@@ -14,8 +14,7 @@ class PatternCoding(object):
     """ PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.
 
 
-    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指し,
-    コーディングとは実数をコードパターンに変換する操作です.
+    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
     コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.
@@ -93,15 +92,36 @@ class PatternCoding(object):
 
         return np.array(code_pattern)
 
-    @staticmethod
-    def _real_to_index(x):
-        """入力値からパターン対応表のインデックスを取得する"""
-        return None
+    def _real_to_code(self, x, low, high):
+        """ 実数xをコードパターンに変換する
+
+        Parameters
+        ----------
+        x : ndarray, shape = (input_dim,)
+            入力値
+        low : float
+            入力値下限
+        high : float
+            入力値上限
+
+        Returns
+        -------
+            code_pattern : ndarray, shape = (input_dim * code_pattern_dim,)
+        """
+
+        pattern_list = []
+        for i, element in enumerate(x):
+            index = int(np.floor(element * self.input_division_num))
+            pattern_list.append(self.code_pattern_table[i, index])
+        code_pattern = np.ravel(pattern_list)
+
+        return code_pattern
 
     def coding(self, X, low=0, high=1):
-        """ 入力値をコードパターンに変換する
+        """ コーディングとは実数をパターンコードに変換する操作です.
 
-        入力値の値域を引数low,highによって設定することができます.
+
+        入力値の値域を追加の引数low,highによって設定することができます.
         入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
         入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.
 
@@ -111,41 +131,29 @@ class PatternCoding(object):
             入力データ
         lower : float, optional
             入力値下限
-
         high : float, optional
             入力値上限
 
         Returns
         -------
-        code_pattern : ndarray, shape =(code_pattern_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)
+        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,),(code_pattern_dim * input_dim,input_data_num)
 
         """
 
         # 入力データが1次元の場合
         if X.ndim == 1:
-
-            pattern_list = []
-            for i, element in enumerate(X):
-                index = int(np.floor(element * self.input_division_num))
-                pattern_list.append(self.code_pattern_table[i, index])
-            code_pattern = np.ravel(pattern_list)
-
+            code_pattern = self._real_to_code(X, low, high)
             return code_pattern
 
         # 入力データが2次元の場合
         elif X.ndim == 2:
-            matrix_list = []
+            pattern_list = []
+
             for x in X:
+                code_pattern = self._real_to_code(x, low, high)
+                pattern_list.append(code_pattern)
 
-                pattern_list = []
-                for i, element in enumerate(x):
-                    index = int(np.floor(element * self.input_division_num))
-                    pattern_list.append(self.code_pattern_table[i, index])
-                matrix_list.append(np.ravel(pattern_list))
-
-            code_pattern = np.array(matrix_list)
-
-            return code_pattern
+            return np.array(pattern_list)
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
 
