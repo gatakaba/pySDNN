@@ -141,7 +141,7 @@
 <div class="viewcode-block" id="PatternCoding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding">[docs]</a><span class="k">class</span> <span class="nc">PatternCoding</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</span>
 
-<span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.</span>
+<span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルです.</span>
 
 <span class="sd">    PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,</span>
 <span class="sd">    コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.</span>
@@ -257,8 +257,10 @@
             <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scaled_element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
 
             <span class="c1"># 正規化</span>
-            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
 
             <span class="n">code_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
 
@@ -311,17 +313,36 @@
 
 
 <div class="viewcode-block" id="SelectiveDesensitization"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization">[docs]</a><span class="k">class</span> <span class="nc">SelectiveDesensitization</span><span class="p">(</span><span class="n">PatternCoding</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    パターンを選択的不感化する</span>
+    <span class="sd">&quot;&quot;&quot; SelectiveDesensitizationクラスは実数と選択的不感化されたコードパターンの対応関係の管理を行うクラスです.</span>
+
+<span class="sd">    選択的不感化とは二つのパターンコード :math:`\mathbf{p}_{i}` , :math:`\mathbf{p}_{j}` を以下の式に従って変換を行う操作です.</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        \phi : x \mapsto \mathbf{p}</span>
+<span class="sd">        \mathbf{p}_{i,j} = \\frac{\mathbf{p}_{i} + 1}{2} \mathbf{p}_{j}</span>
 
+<span class="sd">        \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}</span>
+
+<span class="sd">    入力次元がN次元の場合, :math:`\\frac{N(N-1)}{2}` 個の選択的不感化されたコードパターンが生成されます.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code_pattern_dim : int</span>
+<span class="sd">        コードパターンベクトルの次元数 n</span>
+<span class="sd">    input_division_num : int</span>
+<span class="sd">        実数の分割数 q</span>
+<span class="sd">    reversal_num : int</span>
+<span class="sd">        反転数 r</span>
+<span class="sd">    input_dim : int</span>
+<span class="sd">        入力データの次元数 N</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SelectiveDesensitization.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="SelectiveDesensitization.pattern_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">pattern_to_sd_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern1</span><span class="p">,</span> <span class="n">pattern2</span><span class="p">):</span>
         <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">pattern1</span><span class="p">)</span> <span class="o">*</span> <span class="n">pattern2</span> <span class="o">/</span> <span class="mf">2.0</span>

@@ -12,7 +12,7 @@ import numpy as np
 class PatternCoding(object):
     """ PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.
 
-    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.
+    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルです.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
     コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.
@@ -128,8 +128,10 @@ class PatternCoding(object):
             index = int(np.floor(scaled_element * self.input_division_num))
 
             # 正規化
-            if index < 0: index = 0
-            if index > self.input_division_num - 1: index = self.input_division_num - 1
+            if index < 0:
+                index = 0
+            if index > self.input_division_num - 1:
+                index = self.input_division_num - 1
 
             code_list.append(self.code_pattern_table[i, index])
 
@@ -182,13 +184,29 @@ class PatternCoding(object):
 
 
 class SelectiveDesensitization(PatternCoding):
-    """
-    パターンを選択的不感化する
+    """ SelectiveDesensitizationクラスは実数と選択的不感化されたコードパターンの対応関係の管理を行うクラスです.
+
+    選択的不感化とは二つのパターンコード :math:`\mathbf{p}_{i}` , :math:`\mathbf{p}_{j}` を以下の式に従って変換を行う操作です.
 
     .. math::
 
-        \phi : x \mapsto \mathbf{p}
+        \mathbf{p}_{i,j} = \\frac{\mathbf{p}_{i} + 1}{2} \mathbf{p}_{j}
 
+        \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}
+
+    入力次元がN次元の場合, :math:`\\frac{N(N-1)}{2}` 個の選択的不感化されたコードパターンが生成されます.
+
+
+    Parameters
+    ----------
+    code_pattern_dim : int
+        コードパターンベクトルの次元数 n
+    input_division_num : int
+        実数の分割数 q
+    reversal_num : int
+        反転数 r
+    input_dim : int
+        入力データの次元数 N
     """
 
     def __init__(self, binary_vector_dim, division_num, reversal_num=1):
@@ -196,7 +214,6 @@ class SelectiveDesensitization(PatternCoding):
 
     def coding(self):
         pass
-    
 
     def pattern_to_sd_pattern(self, pattern1, pattern2):
         sd_pattern = (1 + pattern1) * pattern2 / 2.0
