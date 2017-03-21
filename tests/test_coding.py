@@ -27,10 +27,9 @@ class TestCoding(unittest.TestCase):
     def test_coding_2d(self):
         n_samples = 10
         x = np.random.random(size=[n_samples, self.input_dim])
-        self.pc.coding(x)
-        # assert self.pc.coding(x).shape == (self.code_pattern_dim * self.input_dim,)
+        assert self.pc.coding(x).shape == (n_samples, self.code_pattern_dim * self.input_dim)
 
-    """
-    def test_coding_input_domain(self):
-        pass
-    """
+    def test_coding_input_range(self):
+        x = np.random.random(size=[8, self.input_dim])
+
+        self.pc.coding(x)
