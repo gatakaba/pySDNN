@@ -15,7 +15,7 @@ class PatternCoding(object):
 
 
     コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指し,
-    コーディングとは実数をコードパターンに変換する事を指します.
+    コーディングとは実数をコードパターンに変換する操作です.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
     コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.
@@ -94,7 +94,7 @@ class PatternCoding(object):
         return np.array(code_pattern)
 
     @staticmethod
-    def real_to_index(x):
+    def _real_to_index(x):
         """入力値からパターン対応表のインデックスを取得する"""
         return None
 
@@ -102,8 +102,8 @@ class PatternCoding(object):
         """ 入力値をコードパターンに変換する
 
         入力値の値域を引数low,highによって設定することができます.
-        入力値がlowよりも小さい場合,入力値がlowとした場合の値を出力します
-        入力値がhighよりも大きい場合,入力値がhighとした場合の値を出力します
+        入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
+        入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.
 
         Parameters
         ----------
@@ -120,25 +120,31 @@ class PatternCoding(object):
         code_pattern : ndarray, shape =(code_pattern_dim * input_dim),(binary_vector_dim * input_dim,input_data_num)
 
         """
+
         # 入力データが1次元の場合
         if X.ndim == 1:
+
             pattern_list = []
-            for feature_index, element in enumerate(X):
+            for i, element in enumerate(X):
                 index = int(np.floor(element * self.input_division_num))
-                pattern_list.append(self.code_pattern_table[feature_index, index])
+                pattern_list.append(self.code_pattern_table[i, index])
             code_pattern = np.ravel(pattern_list)
+
             return code_pattern
 
         # 入力データが2次元の場合
         elif X.ndim == 2:
             matrix_list = []
             for x in X:
+
                 pattern_list = []
                 for i, element in enumerate(x):
                     index = int(np.floor(element * self.input_division_num))
-                    pattern_list.append(self.code_pattern_table[i][index])
+                    pattern_list.append(self.code_pattern_table[i, index])
                 matrix_list.append(np.ravel(pattern_list))
+
             code_pattern = np.array(matrix_list)
+
             return code_pattern
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
