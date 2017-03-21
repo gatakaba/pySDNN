@@ -238,7 +238,6 @@ class SelectiveDesensitization(PatternCoding):
         -------
         sp_pattern : ndarray, shape = (code_pattern_dim,)
             pattern1 selective desensitizated by pattern2
-
         """
         sd_code_pattern = (1 + code_pattern1) * code_pattern2 / 2.0
         return sd_code_pattern
@@ -257,7 +256,7 @@ class SelectiveDesensitization(PatternCoding):
 
         Returns
         -------
-        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) / 2 * code_pattern_dim,)
+        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) * code_pattern_dim,)
         """
 
         if isinstance(low, float) or isinstance(low, int):
@@ -307,51 +306,21 @@ class SelectiveDesensitization(PatternCoding):
 
         Returns
         -------
-        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)
+        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) * binary_vector_dim,)
         """
 
         # 入力データが1次元の場合
         if X.ndim == 1:
             code_pattern = self._real_to_sd_code(X, low, high)
             return code_pattern
-        """
+
         # 入力データが2次元の場合
         elif X.ndim == 2:
             pattern_list = []
 
             for x in X:
-                code_pattern = self._real_to_code(x, low, high)
+                code_pattern = self._real_to_sd_code(x, low, high)
                 pattern_list.append(code_pattern)
             return np.array(pattern_list)
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
-        """
-
-    def num_to_sd_pattern(X):
-        """
-        選択的不感化したパターンを返す
-
-        Parameters
-        ----------
-        X : array, shape = (n_features,)
-
-        Returns
-        -------
-        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)
-        """
-        sd_pattern_list = []
-        for x in X:
-            pattern_list = []
-            for i, element in enumerate(x):
-                index = int(np.floor(element * self.division_num))
-                pattern_list.append(self.code_pattern_table[i][index])
-            sd_pattern = []
-            for i, pattern1 in enumerate(pattern_list):
-                for j, pattern2 in enumerate(pattern_list):
-                    if i == j:
-                        continue
-                    else:
-                        sd_pattern.append(self.pattern_to_sd_pattern(pattern1, pattern2))
-
-            sd_pattern_list.append(np.ravel(sd_pattern))
-        return np.array(sd_pattern_list)

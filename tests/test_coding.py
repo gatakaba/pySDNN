@@ -52,5 +52,15 @@ class TestSelectiveDesensitization(unittest.TestCase):
 
     def test_coding_1d(self):
         x = np.random.random(size=self.input_dim)
-
         assert self.sd.coding(x).shape == (self.input_dim * (self.input_dim - 1) * self.code_pattern_dim,)
+
+    def test_coding_2d(self):
+        n_samples = 10
+        x = np.random.random(size=[n_samples, self.input_dim])
+        assert self.sd.coding(x).shape == (n_samples, self.input_dim * (self.input_dim - 1) * self.code_pattern_dim)
+
+    def test_input_range(self):
+        x = np.random.normal(size=[100, self.input_dim]) * 100
+        self.sd.coding(x)
+        self.sd.coding(x, -10, 10)
+        self.sd.coding(x, np.min(x, axis=0), np.max(x, axis=0))
