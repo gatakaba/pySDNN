@@ -155,8 +155,7 @@ for more information.</p>
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">PatternCoding</code><span class="sig-paren">(</span><em>code_pattern_dim</em>, <em>input_division_num</em>, <em>reversal_num</em>, <em>input_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</p>
-<p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする <span class="math">\(M\)</span> 次元ベクトルを指し,
-コーディングとは実数をコードパターンに変換する操作です.</p>
+<p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする <span class="math">\(M\)</span> 次元ベクトルを指します.</p>
 <p>PatternCodingクラスでは <span class="math">\(N\)</span> 次元の実数ベクトルを一括して扱い,
 コーディングの出力結果は <span class="math">\(N \times M\)</span> 次元ベクトルです.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -187,7 +186,7 @@ for more information.</p>
 <dl class="method">
 <dt id="pysdnn.coding.PatternCoding.coding">
 <code class="descname">coding</code><span class="sig-paren">(</span><em>X</em>, <em>low=0</em>, <em>high=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.coding" title="Permalink to this definition">¶</a></dt>
-<dd><p>入力値をコードパターンに変換する</p>
+<dd><p>コーディングとは実数をパターンコードに変換する操作です.</p>
 <p>入力値の値域を追加の引数low,highによって設定することができます.
 入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
 入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</p>
@@ -199,17 +198,17 @@ for more information.</p>
 <blockquote>
 <div><p>入力データ</p>
 </div></blockquote>
-<p><strong>lower</strong> : float, optional</p>
+<p><strong>low</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
 <blockquote>
-<div><p>入力値下限</p>
+<div><p>入力値下限値</p>
 </div></blockquote>
-<p><strong>high</strong> : float, optional</p>
+<p><strong>high</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
 <blockquote>
-<div><p>入力値上限</p>
+<div><p>入力値上限値</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>code_pattern</strong> : ndarray, shape =(code_pattern_dim * input_dim,),(code_pattern_dim * input_dim,input_data_num)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>code_pattern</strong> : ndarray, shape =(code_pattern_dim * input_dim,) or (code_pattern_dim * input_dim,input_data_num)</p>
 </td>
 </tr>
 </tbody>
