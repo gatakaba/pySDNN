@@ -133,7 +133,6 @@
 
 <span class="sd">This is licensed under an MIT license. See the readme.md file</span>
 <span class="sd">for more information.</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -142,13 +141,10 @@
 <div class="viewcode-block" id="PatternCoding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding">[docs]</a><span class="k">class</span> <span class="nc">PatternCoding</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</span>
 
-
 <span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.</span>
 
 <span class="sd">    PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,</span>
-<span class="sd">    コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.</span>
-
-
+<span class="sd">    コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -197,7 +193,8 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        code_pattern : ndarray, shape = (division_num,code_pattern_dim)</span>
-
+<span class="sd">            コードパターン</span>
+<span class="sd">            code_pattern[i]はi番目のパターンを表す</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">code_pattern</span> <span class="o">=</span> <span class="p">[]</span>
@@ -234,9 +231,9 @@
 <span class="sd">        x : ndarray, shape = (input_dim,)</span>
 <span class="sd">            入力値</span>
 <span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
-<span class="sd">            入力値下限値</span>
+<span class="sd">            入力値の下限</span>
 <span class="sd">        high : int or float or ndarray, shape =(input_dim,), optional</span>
-<span class="sd">            入力値上限値</span>
+<span class="sd">            入力値の上限</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -258,6 +255,7 @@
             <span class="n">scaled_element</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">high_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
             <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scaled_element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
+
             <span class="c1"># 正規化</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
@@ -270,9 +268,10 @@
 <div class="viewcode-block" id="PatternCoding.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; コーディングとは実数をパターンコードに変換する操作です.</span>
 
+<span class="sd">        入力値の値域を引数low,highによって設定することができます.</span>
 
-<span class="sd">        入力値の値域を追加の引数low,highによって設定することができます.</span>
 <span class="sd">        入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.</span>
+
 <span class="sd">        入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</span>
 
 <span class="sd">        Parameters</span>
@@ -280,13 +279,16 @@
 <span class="sd">        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
 <span class="sd">            入力データ</span>
 <span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
-<span class="sd">            入力値下限値</span>
+<span class="sd">            入力値の下限</span>
 <span class="sd">        high : int or float or ndarray, shape =(input_dim,), optional</span>
-<span class="sd">            入力値上限値</span>
+<span class="sd">            入力値の上限</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (code_pattern_dim * input_dim,input_data_num)</span>
+<span class="sd">        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (sample_num, input_dim * code_pattern_dim)</span>
+<span class="sd">            コードパターン</span>
+
+<span class="sd">            返り値は各入力次元に対応するコードパターンが結合された1次元ndarrayです.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -311,9 +313,10 @@
 <div class="viewcode-block" id="SelectiveDesensitization"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization">[docs]</a><span class="k">class</span> <span class="nc">SelectiveDesensitization</span><span class="p">(</span><span class="n">PatternCoding</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    パターンを選択的不感化する</span>
+
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \phi : x \mapsto \mathbf{p}</span>
+<span class="sd">        \phi : x \mapsto \mathbf{p}</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

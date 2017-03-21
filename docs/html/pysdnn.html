@@ -157,7 +157,7 @@ for more information.</p>
 <p>PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</p>
 <p>コードパターンとは <span class="math">\(\{-1,1\}\)</span> を要素とする <span class="math">\(M\)</span> 次元ベクトルを指します.</p>
 <p>PatternCodingクラスでは <span class="math">\(N\)</span> 次元の実数ベクトルを一括して扱い,
-コーディングの出力結果は <span class="math">\(N \times M\)</span> 次元ベクトルです.</p>
+コーディングの出力結果は <span class="math">\(N \ast M\)</span> 次元ベクトルです.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -187,9 +187,9 @@ for more information.</p>
 <dt id="pysdnn.coding.PatternCoding.coding">
 <code class="descname">coding</code><span class="sig-paren">(</span><em>X</em>, <em>low=0</em>, <em>high=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#PatternCoding.coding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.PatternCoding.coding" title="Permalink to this definition">¶</a></dt>
 <dd><p>コーディングとは実数をパターンコードに変換する操作です.</p>
-<p>入力値の値域を追加の引数low,highによって設定することができます.
-入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
-入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</p>
+<p>入力値の値域を引数low,highによって設定することができます.</p>
+<p>入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.</p>
+<p>入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -200,15 +200,19 @@ for more information.</p>
 </div></blockquote>
 <p><strong>low</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
 <blockquote>
-<div><p>入力値下限値</p>
+<div><p>入力値の下限</p>
 </div></blockquote>
 <p><strong>high</strong> : int or float or ndarray, shape =(input_dim,), optional</p>
 <blockquote>
-<div><p>入力値上限値</p>
+<div><p>入力値の上限</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>code_pattern</strong> : ndarray, shape =(code_pattern_dim * input_dim,) or (code_pattern_dim * input_dim,input_data_num)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>code_pattern</strong> : ndarray, shape =(code_pattern_dim * input_dim,) or (sample_num, input_dim * code_pattern_dim)</p>
+<blockquote class="last">
+<div><p>コードパターン</p>
+<p>返り値は各入力次元に対応するコードパターンが結合された1次元ndarrayです.</p>
+</div></blockquote>
 </td>
 </tr>
 </tbody>
@@ -221,11 +225,9 @@ for more information.</p>
 <dt id="pysdnn.coding.SelectiveDesensitization">
 <em class="property">class </em><code class="descclassname">pysdnn.coding.</code><code class="descname">SelectiveDesensitization</code><span class="sig-paren">(</span><em>binary_vector_dim</em>, <em>division_num</em>, <em>reversal_num=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/coding.html#SelectiveDesensitization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.coding.SelectiveDesensitization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pysdnn.coding.PatternCoding" title="pysdnn.coding.PatternCoding"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.coding.PatternCoding</span></code></a></p>
-<p>パターンを選択的不感化する
-.. math:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>\<span class="n">phi</span> <span class="p">:</span> <span class="n">x</span> \<span class="n">mapsto</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">p</span><span class="p">}</span>
-</pre></div>
-</div>
+<p>パターンを選択的不感化する</p>
+<div class="math">
+\[\phi : x \mapsto \mathbf{p}\]</div>
 <p class="rubric">Methods</p>
 <dl class="method">
 <dt id="pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">

@@ -4,7 +4,6 @@
 
 This is licensed under an MIT license. See the readme.md file
 for more information.
-
 """
 
 import numpy as np
@@ -13,13 +12,10 @@ import numpy as np
 class PatternCoding(object):
     """ PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.
 
-
     コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
-    コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.
-
-
+    コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.
 
     Parameters
     ----------
@@ -68,7 +64,8 @@ class PatternCoding(object):
         Returns
         -------
         code_pattern : ndarray, shape = (division_num,code_pattern_dim)
-
+            コードパターン
+            code_pattern[i]はi番目のパターンを表す
         """
 
         code_pattern = []
@@ -105,9 +102,9 @@ class PatternCoding(object):
         x : ndarray, shape = (input_dim,)
             入力値
         low : int or float or ndarray, shape =(input_dim,), optional
-            入力値下限値
+            入力値の下限
         high : int or float or ndarray, shape =(input_dim,), optional
-            入力値上限値
+            入力値の上限
 
         Returns
         -------
@@ -129,6 +126,7 @@ class PatternCoding(object):
             scaled_element = (element - low_array[i]) / (high_array[i] - low_array[i])
 
             index = int(np.floor(scaled_element * self.input_division_num))
+
             # 正規化
             if index < 0: index = 0
             if index > self.input_division_num - 1: index = self.input_division_num - 1
@@ -141,9 +139,10 @@ class PatternCoding(object):
     def coding(self, X, low=0, high=1):
         """ コーディングとは実数をパターンコードに変換する操作です.
 
+        入力値の値域を引数low,highによって設定することができます.
 
-        入力値の値域を追加の引数low,highによって設定することができます.
         入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
+
         入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.
 
         Parameters
@@ -151,13 +150,16 @@ class PatternCoding(object):
         X : ndarray, shape = (input_dim,) or (sample_num,input_dim)
             入力データ
         low : int or float or ndarray, shape =(input_dim,), optional
-            入力値下限値
+            入力値の下限
         high : int or float or ndarray, shape =(input_dim,), optional
-            入力値上限値
+            入力値の上限
 
         Returns
         -------
-        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (code_pattern_dim * input_dim,input_data_num)
+        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (sample_num, input_dim * code_pattern_dim)
+            コードパターン
+
+            返り値は各入力次元に対応するコードパターンが結合された1次元ndarrayです.
 
         """
 
@@ -182,14 +184,19 @@ class PatternCoding(object):
 class SelectiveDesensitization(PatternCoding):
     """
     パターンを選択的不感化する
+
     .. math::
 
-       \phi : x \mapsto \mathbf{p}
+        \phi : x \mapsto \mathbf{p}
 
     """
 
     def __init__(self, binary_vector_dim, division_num, reversal_num=1):
         super().__init__(binary_vector_dim, division_num, reversal_num)
+
+    def coding(self):
+        pass
+    
 
     def pattern_to_sd_pattern(self, pattern1, pattern2):
         sd_pattern = (1 + pattern1) * pattern2 / 2.0

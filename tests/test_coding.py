@@ -16,7 +16,7 @@ class TestCoding(unittest.TestCase):
 
         self.pc = PatternCoding(self.code_pattern_dim, self.division_num, self.reversal_num, self.input_dim)
 
-    def test_code_pattern_size(self):
+    def test_pattern_size(self):
         assert self.pc._create_code_pattern().shape == (self.division_num, self.code_pattern_dim)
         assert self.pc.code_pattern_table.shape == (self.input_dim, self.division_num, self.code_pattern_dim)
 
@@ -29,9 +29,8 @@ class TestCoding(unittest.TestCase):
         x = np.random.random(size=[n_samples, self.input_dim])
         assert self.pc.coding(x).shape == (n_samples, self.code_pattern_dim * self.input_dim)
 
-    def test_coding_input_range(self):
+    def test_input_range(self):
         x = np.random.normal(size=[100, self.input_dim]) * 100
-
         self.pc.coding(x)
         self.pc.coding(x, -10, 10)
-        self.pc.coding(x, np.random.random(size=self.input_dim) - 10, np.random.random(size=self.input_dim) + 10)
+        self.pc.coding(x, np.min(x, axis=0), np.max(x, axis=0))
