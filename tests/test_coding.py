@@ -48,4 +48,9 @@ class TestSelectiveDesensitization(unittest.TestCase):
         self.reversal_num = 2
         self.input_dim = 5
 
-        self.pc = SelectiveDesensitization(self.code_pattern_dim, self.division_num, self.reversal_num, self.input_dim)
+        self.sd = SelectiveDesensitization(self.code_pattern_dim, self.division_num, self.reversal_num, self.input_dim)
+
+    def test_coding_1d(self):
+        x = np.random.random(size=self.input_dim)
+
+        assert self.sd.coding(x).shape == (self.input_dim * (self.input_dim - 1) * self.code_pattern_dim,)

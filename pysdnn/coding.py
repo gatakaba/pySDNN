@@ -10,9 +10,9 @@ import numpy as np
 
 
 class PatternCoding(object):
-    """ PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.
+    """ PatternCodingクラスは実数とパターンコードの対応関係の管理を行うクラスです.
 
-    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルです.
+    パターンコードとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルです.
 
     PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,
     コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.
@@ -20,7 +20,7 @@ class PatternCoding(object):
     Parameters
     ----------
     code_pattern_dim : int
-        コードパターンベクトルの次元数 n
+        パターンコードベクトルの次元数 n
     input_division_num : int
         実数の分割数 q
     reversal_num : int
@@ -35,15 +35,15 @@ class PatternCoding(object):
         self.reversal_num = reversal_num
         self.input_dim = input_dim
 
-        # コードパターン対応表を作成
+        # パターンコード対応表を作成
         self.code_pattern_table = self._create_code_pattern_table()
 
     def _create_code_pattern_table(self):
-        """ 実数とコードパターンの対応表を作成する
+        """ 実数とパターンコードの対応表を作成する
         Returns
         -------
         code_pattern_table : ndarray, shape = (input_dim, division_num, code_pattern_dim)
-            コードパターン対応表
+            パターンコード対応表
             code_pattern_table[i,j]はi次元目のj番目のパターンを表す
         """
 
@@ -54,9 +54,9 @@ class PatternCoding(object):
         return code_pattern_table
 
     def _create_code_pattern(self):
-        """ コードパターンを作成する
+        """ パターンコードを作成する
 
-        コードパターンは以下の条件を満たす
+        パターンコードは以下の条件を満たす
         - 入力次元ごとに異なるパターンを持つ
         - 重複が無い
         - -1と1の数の数が等しい
@@ -64,7 +64,7 @@ class PatternCoding(object):
         Returns
         -------
         code_pattern : ndarray, shape = (division_num,code_pattern_dim)
-            コードパターン
+            パターンコード
             code_pattern[i]はi番目のパターンを表す
         """
 
@@ -95,7 +95,7 @@ class PatternCoding(object):
         return np.array(code_pattern)
 
     def _real_to_code(self, x, low, high):
-        """ 実数xをコードパターンに変換する
+        """ 実数xをパターンコードに変換する
 
         Parameters
         ----------
@@ -121,7 +121,7 @@ class PatternCoding(object):
         else:
             high_array = high
 
-        code_list = []
+        code_pattern_list = []
         for i, element in enumerate(x):
             scaled_element = (element - low_array[i]) / (high_array[i] - low_array[i])
 
@@ -133,9 +133,9 @@ class PatternCoding(object):
             if index > self.input_division_num - 1:
                 index = self.input_division_num - 1
 
-            code_list.append(self.code_pattern_table[i, index])
+            code_pattern_list.append(self.code_pattern_table[i, index])
 
-        code_pattern = np.ravel(code_list)
+        code_pattern = np.ravel(code_pattern_list)
         return code_pattern
 
     def coding(self, X, low=0, high=1):
@@ -143,9 +143,9 @@ class PatternCoding(object):
 
         入力値の値域を引数low,highによって設定することができます.
 
-        入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.
+        入力値がlowよりも小さい場合,入力値がlowとした場合のパターンコードを出力します.
 
-        入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.
+        入力値がhighよりも大きい場合,入力値がhighとした場合のパターンコードを出力します.
 
         Parameters
         ----------
@@ -159,9 +159,9 @@ class PatternCoding(object):
         Returns
         -------
         code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (sample_num, input_dim * code_pattern_dim)
-            コードパターン
+            パターンコード
 
-            返り値は各入力次元に対応するコードパターンが結合された1次元ndarrayです.
+            返り値は各入力次元に対応するパターンコードが結合された1次元ndarrayです.
 
         """
 
@@ -195,7 +195,7 @@ class PatternCoding(object):
 
 
 class SelectiveDesensitization(PatternCoding):
-    """ SelectiveDesensitizationクラスは実数と選択的不感化されたコードパターンの対応関係の管理を行うクラスです.
+    """ SelectiveDesensitizationクラスは実数と選択的不感化されたパターンコードの対応関係の管理を行うクラスです.
 
     選択的不感化とは二つのパターンコード :math:`\mathbf{p}_{i}` , :math:`\mathbf{p}_{j}` を以下の式に従って変換を行う操作です.
 
@@ -205,13 +205,13 @@ class SelectiveDesensitization(PatternCoding):
 
         \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}
 
-    入力次元がN次元の場合, :math:`\\frac{N(N-1)}{2}` 個の選択的不感化されたコードパターンが生成されます.
+    入力次元がN次元の場合, :math:`\\frac{N(N-1)}{2}` 個の選択的不感化されたパターンコードが生成されます.
 
 
     Parameters
     ----------
     code_pattern_dim : int
-        コードパターンベクトルの次元数 n
+        パターンコードベクトルの次元数 n
     input_division_num : int
         実数の分割数 q
     reversal_num : int
@@ -244,20 +244,20 @@ class SelectiveDesensitization(PatternCoding):
         return sd_code_pattern
 
     def _real_to_sd_code(self, x, low, high):
-        """ 実数xをコードパターンに変換する
+        """ 実数xをパターンコードに変換する
 
         Parameters
         ----------
         x : ndarray, shape = (input_dim,)
-        入力値
+            入力値
         low : int or float or ndarray, shape =(input_dim,), optional
-        入力値の下限
+            入力値の下限
         high : int or float or ndarray, shape =(input_dim,), optional
-        入力値の上限
+            入力値の上限
 
         Returns
         -------
-        sd_code_pattern : ndarray, shape = (input_dim * code_pattern_dim,)
+        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) / 2 * code_pattern_dim,)
         """
 
         if isinstance(low, float) or isinstance(low, int):
@@ -269,26 +269,32 @@ class SelectiveDesensitization(PatternCoding):
             high_array = np.ones(self.input_dim) * high
         else:
             high_array = high
-
-        code_list = []
+        # 実数からコードパターンを作成
+        code_pattern_list = []
         for i, element in enumerate(x):
             scaled_element = (element - low_array[i]) / (high_array[i] - low_array[i])
-
             index = int(np.floor(scaled_element * self.input_division_num))
-
             # 正規化
             if index < 0:
                 index = 0
             if index > self.input_division_num - 1:
                 index = self.input_division_num - 1
+            code_pattern_list.append(self.code_pattern_table[i, index])
 
-            code_list.append(self.code_pattern_table[i, index])
+        # コードパターンを不感化
+        sd_code_pattern_list = []
+        for i, pattern1 in enumerate(code_pattern_list):
+            for j, pattern2 in enumerate(code_pattern_list):
+                if i == j:
+                    continue
+                else:
+                    sd_code_pattern_list.append(self._pattern_to_sd_pattern(pattern1, pattern2))
 
-        code_pattern = np.ravel(code_list)
-        return code_pattern
+        sd_code_pattern = np.ravel(sd_code_pattern_list)
+        return sd_code_pattern
 
     def coding(self, X, low=0, high=1):
-        """ 選択的不感化されたコードパターンを出力する
+        """ 選択的不感化されたパターンコードを出力する
 
         Parameters
         ----------
@@ -306,9 +312,9 @@ class SelectiveDesensitization(PatternCoding):
 
         # 入力データが1次元の場合
         if X.ndim == 1:
-            code_pattern = self._real_to_code(X, low, high)
+            code_pattern = self._real_to_sd_code(X, low, high)
             return code_pattern
-
+        """
         # 入力データが2次元の場合
         elif X.ndim == 2:
             pattern_list = []
@@ -319,6 +325,7 @@ class SelectiveDesensitization(PatternCoding):
             return np.array(pattern_list)
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
+        """
 
     def num_to_sd_pattern(X):
         """
