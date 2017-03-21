@@ -144,7 +144,7 @@
 
 
 <span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指し,</span>
-<span class="sd">    コーディングとは実数をコードパターンに変換する事を指します.</span>
+<span class="sd">    コーディングとは実数をコードパターンに変換する操作です.</span>
 
 <span class="sd">    PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,</span>
 <span class="sd">    コーディングの出力結果は :math:`N \\times M` 次元ベクトルです.</span>
@@ -222,40 +222,53 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">code_pattern</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PatternCoding.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; コードパターン対応表から入力された実数に対応するコードパターンを取得する</span>
+    <span class="k">def</span> <span class="nf">_real_to_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;実数xをコードパターンに変換する&quot;&quot;&quot;</span>
+
+        <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
+            <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+        <span class="n">code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">code_pattern</span>
+
+<div class="viewcode-block" id="PatternCoding.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 入力値をコードパターンに変換する</span>
+
+<span class="sd">        入力値の値域を追加の引数low,highによって設定することができます.</span>
+<span class="sd">        入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.</span>
+<span class="sd">        入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : ndarray</span>
+<span class="sd">        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
 <span class="sd">            入力データ</span>
+<span class="sd">        lower : float, optional</span>
+<span class="sd">            入力値下限</span>
+<span class="sd">        high : float, optional</span>
+<span class="sd">            入力値上限</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        code_pattern : ndarray, shape =(binary_vector_dim \\times input_dim),(binary_vector_dim \\times input_dim,input_data_num)</span>
+<span class="sd">        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,),(code_pattern_dim * input_dim,input_data_num)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="c1"># 入力データが1次元の場合</span>
         <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">feature_index</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
-
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">feature_index</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
-
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">matrix_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-                <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                    <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
-
-                    <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
-                <span class="n">matrix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">))</span>
-            <span class="n">code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matrix_list</span><span class="p">)</span>
+            <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_code</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">code_pattern</span>
+
+        <span class="c1"># 入力データが2次元の場合</span>
+        <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
+                <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_code</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code_pattern</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data dimensions must be 1d or 2d&#39;</span><span class="p">)</span></div></div>
 
