@@ -149,7 +149,7 @@ class PatternCoding(object):
 
         Parameters
         ----------
-        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)
+        X : float or ndarray, shape = (input_dim,) or (sample_num,input_dim)
             入力データ
         low : int or float or ndarray, shape =(input_dim,), optional
             入力値の下限
@@ -165,8 +165,21 @@ class PatternCoding(object):
 
         """
 
-        # 入力データが1次元の場合
-        if X.ndim == 1:
+        # 入力データが0次元(スカラー)の場合
+        if X.ndim == 0:
+            scaled_element = (X - low) / (high - low)
+
+            index = int(np.floor(scaled_element * self.input_division_num))
+
+            # 正規化
+            if index < 0:
+                index = 0
+            if index > self.input_division_num - 1:
+                index = self.input_division_num - 1
+
+            return self.code_pattern_table[0, index]
+
+        elif X.ndim == 1:
             code_pattern = self._real_to_code(X, low, high)
             return code_pattern
 
