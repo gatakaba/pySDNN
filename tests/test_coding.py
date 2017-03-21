@@ -9,8 +9,8 @@ from pysdnn.coding import SelectiveDesensitization
 
 class TestCoding(unittest.TestCase):
     def setUp(self):
-        self.code_pattern_dim = 8
-        self.division_num = 6
+        self.code_pattern_dim = 13
+        self.division_num = 17
         self.reversal_num = 2
         self.input_dim = 5
 
@@ -30,6 +30,8 @@ class TestCoding(unittest.TestCase):
         assert self.pc.coding(x).shape == (n_samples, self.code_pattern_dim * self.input_dim)
 
     def test_coding_input_range(self):
-        x = np.random.random(size=[8, self.input_dim])
+        x = np.random.normal(size=[100, self.input_dim]) * 100
 
         self.pc.coding(x)
+        self.pc.coding(x, -10, 10)
+        self.pc.coding(x, np.random.random(size=self.input_dim) - 10, np.random.random(size=self.input_dim) + 10)

@@ -39,21 +39,26 @@ class PatternCoding(object):
         self.reversal_num = reversal_num
         self.input_dim = input_dim
 
-        # コードパターン対応表を宣言
-        self.code_pattern_table = np.empty([self.input_dim, self.input_division_num, self.code_pattern_dim])
-        # 対応表を作成
-        self._create_code_pattern_table()
+        # コードパターン対応表を作成
+        self.code_pattern_table = self._create_code_pattern_table()
 
     def _create_code_pattern_table(self):
-        """実数とコードパターンの対応表を作成する"""
+        """ 実数とコードパターンの対応表を作成する
+        Returns
+        -------
+        code_pattern_table : ndarray, shape = (input_dim, division_num, code_pattern_dim)
+            コードパターン対応表
+            code_pattern_table[i,j]はi次元目のj番目のパターンを表す
+        """
 
+        code_pattern_table = np.empty([self.input_dim, self.input_division_num, self.code_pattern_dim])
         for i in range(self.input_dim):
-            self.code_pattern_table[i] = self._create_code_pattern()
+            code_pattern_table[i] = self._create_code_pattern()
 
-        return None
+        return code_pattern_table
 
     def _create_code_pattern(self):
-        """コードパターンを作成する
+        """ コードパターンを作成する
 
         コードパターンは以下の条件を満たす
         - 入力次元ごとに異なるパターンを持つ
@@ -99,22 +104,38 @@ class PatternCoding(object):
         ----------
         x : ndarray, shape = (input_dim,)
             入力値
-        low : float
-            入力値下限
-        high : float
-            入力値上限
+        low : int or float or ndarray, shape =(input_dim,), optional
+            入力値下限値
+        high : int or float or ndarray, shape =(input_dim,), optional
+            入力値上限値
 
         Returns
         -------
             code_pattern : ndarray, shape = (input_dim * code_pattern_dim,)
         """
 
-        pattern_list = []
-        for i, element in enumerate(x):
-            index = int(np.floor(element * self.input_division_num))
-            pattern_list.append(self.code_pattern_table[i, index])
-        code_pattern = np.ravel(pattern_list)
+        if isinstance(low, float) or isinstance(low, int):
+            low_array = np.ones(self.input_dim) * low
+        else:
+            low_array = low
 
+        if isinstance(high, float) or isinstance(high, int):
+            high_array = np.ones(self.input_dim) * high
+        else:
+            high_array = high
+
+        code_list = []
+        for i, element in enumerate(x):
+            scaled_element = (element - low_array[i]) / (high_array[i] - low_array[i])
+
+            index = int(np.floor(scaled_element * self.input_division_num))
+            # 正規化
+            if index < 0: index = 0
+            if index > self.input_division_num - 1: index = self.input_division_num - 1
+
+            code_list.append(self.code_pattern_table[i, index])
+
+        code_pattern = np.ravel(code_list)
         return code_pattern
 
     def coding(self, X, low=0, high=1):
@@ -129,14 +150,14 @@ class PatternCoding(object):
         ----------
         X : ndarray, shape = (input_dim,) or (sample_num,input_dim)
             入力データ
-        lower : float, optional
-            入力値下限
-        high : float, optional
-            入力値上限
+        low : int or float or ndarray, shape =(input_dim,), optional
+            入力値下限値
+        high : int or float or ndarray, shape =(input_dim,), optional
+            入力値上限値
 
         Returns
         -------
-        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,),(code_pattern_dim * input_dim,input_data_num)
+        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (code_pattern_dim * input_dim,input_data_num)
 
         """
 
