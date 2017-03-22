@@ -5,7 +5,6 @@ import numpy as np
 import unittest
 
 from pysdnn import SDNN
-from sklearn.utils.estimator_checks import check_estimator
 
 
 class TestSDNN(unittest.TestCase):
@@ -27,5 +26,3 @@ class TestSDNN(unittest.TestCase):
     def test_predict(self):
         self.sdnn.fit(self.train_X, self.train_y)
         self.sdnn.predict(self.test_X)
-
-
