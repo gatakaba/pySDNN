@@ -7,7 +7,6 @@ for more information.
 """
 
 import numpy as np
-from sklearn.utils.validation import check_X_y, check_is_fitted, check_array
 
 
 def add_columns(input_array):
@@ -152,5 +151,3 @@ def gauss(X):
     """
 
     return np.exp(-(X[:, 0] - 0.5) ** 2 - (X[:, 1] - 0.5) ** 2)
-
-
