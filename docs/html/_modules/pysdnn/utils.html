@@ -172,6 +172,30 @@
     <span class="k">return</span> <span class="n">intercepted_array</span></div>
 
 
+<div class="viewcode-block" id="step"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.step">[docs]</a><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; step function</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        f(x) =</span>
+<span class="sd">        \\begin{cases}</span>
+<span class="sd">            1 (x \geq 0) \\\\</span>
+<span class="sd">            0 (x &lt; 0)</span>
+<span class="sd">        \\end{cases}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : float or array-like, shape = (sample_num)</span>
+<span class="sd">        入力データ</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : float or array-like, shape = (sample_num)</span>
+<span class="sd">        計算結果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+
+
 <div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; 線形関数</span>
 
@@ -197,7 +221,7 @@
 <span class="sd">    .. math::</span>
 <span class="sd">        f(x,y) =</span>
 <span class="sd">        \\begin{cases}</span>
-<span class="sd">            1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\\\</span>
+<span class="sd">            1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\\\</span>
 <span class="sd">            \\frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)</span>
 <span class="sd">        \\end{cases}</span>
 

@@ -10,7 +10,7 @@ for more information.
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
-from pysdnn.utils import add_columns
+from pysdnn.utils import add_columns, step
 
 
 class PP(BaseEstimator):
@@ -41,10 +41,6 @@ class PP(BaseEstimator):
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
         self.is_pattern = is_pattern
-
-    @staticmethod
-    def hidden_function(x):
-        return (np.sign(x) + 1) / 2.0
 
     def activate_function(self, x):
         y = self.a * x + self.b

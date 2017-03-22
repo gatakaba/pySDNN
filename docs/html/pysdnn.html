@@ -371,11 +371,6 @@ for more information.</p>
 <code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.fit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
-<dt id="pysdnn.parallel_perceptron.PP.hidden_function">
-<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.hidden_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="pysdnn.parallel_perceptron.PP.inverse_activate_function">
 <code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
@@ -564,7 +559,7 @@ for more information.</p>
 <div class="math">
 \[\begin{split}f(x,y) =
 \begin{cases}
-    1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\
+    1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\
     \frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
 \end{cases}\end{split}\]</div>
 <table class="docutils citation" frame="void" id="r1" rules="none">
@@ -584,6 +579,36 @@ for more information.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pysdnn.utils.step">
+<code class="descclassname">pysdnn.utils.</code><code class="descname">step</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>step function</p>
+<div class="math">
+\[\begin{split}f(x) =
+\begin{cases}
+    1 (x \geq 0) \\
+    0 (x &lt; 0)
+\end{cases}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num)</p>
 <blockquote class="last">
 <div><p>計算結果</p>
 </div></blockquote>
