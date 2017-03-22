@@ -377,9 +377,17 @@ for more information.</p>
 <dt id="pysdnn.utils.add_columns">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">add_columns</code><span class="sig-paren">(</span><em>input_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.add_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>切片を加える</p>
-<p>切片は末尾に加えられる</p>
+<p>1を各データの末尾に加える</p>
 <div class="math">
-\[ \begin{align}\begin{aligned}\mathbf{p}_{i,j} = \frac{\mathbf{p}_{i} + 1}{2} \mathbf{p}_{j}\\\mathbf{p}_{j,i} = \frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}\end{aligned}\end{align} \]</div>
+\[ \begin{align}\begin{aligned}\begin{split}X = \begin{pmatrix}
+                a &amp; b \\
+                c &amp; d \\
+                e &amp; f
+                \end{pmatrix}\end{split}\\\begin{split}inpteceptedX = \begin{pmatrix}
+                a &amp; b &amp; 1 \\
+                c &amp; d &amp; 1 \\
+                e &amp; f &amp; 1
+                \end{pmatrix}\end{split}\end{aligned}\end{align} \]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -390,7 +398,7 @@ for more information.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercepted_X</strong> : array of shape = (samples_num, input_dim + 1)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercepted_array</strong> : array of shape = (samples_num, input_dim + 1)</p>
 <blockquote class="last">
 <div><p>切片を加えられた入力データ</p>
 </div></blockquote>
@@ -403,27 +411,120 @@ for more information.</p>
 <dl class="function">
 <dt id="pysdnn.utils.cylinder">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">cylinder</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#cylinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.cylinder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>円筒関数</p>
+<div class="math">
+\[\begin{split}f(x,y) =
+\begin{cases}
+    1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\
+    0 (otherwise)
+\end{cases}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pysdnn.utils.gauss">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">gauss</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.gauss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>ガウス関数</p>
+<div class="math">
+\[f(x,y) = \exp(-(x-0.5)^{2} -(y-0.5)^{2})\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pysdnn.utils.linear">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.linear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>線形関数</p>
+<div class="math">
+\[f(x) = \sum_{i} x_{i}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, input_dim)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pysdnn.utils.nonaka">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">nonaka</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#nonaka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.nonaka" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pysdnn.utils.wave">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">wave</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#wave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.wave" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>野中関数[R1]_</p>
+<div class="math">
+\[\begin{split}f(x,y) =
+\begin{cases}
+    1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\
+    \frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
+\end{cases}\end{split}\]</div>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R1]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-pysdnn">
