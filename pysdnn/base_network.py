@@ -5,10 +5,9 @@
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
-from pysdnn import utils
 
 
-def step(x):
+def _step(x):
     """ ステップ関数
 
 .. math::
@@ -33,7 +32,7 @@ def step(x):
     return y
 
 
-def scaling_function(x, a, b):
+def _scaling_function(x, a, b):
     """ スケーリング関数
 
     .. math::
@@ -57,7 +56,7 @@ def scaling_function(x, a, b):
     return y
 
 
-def inverse_scaling_function(y, a, b):
+def _inverse__scaling_function(y, a, b):
     """ スケーリング関数の逆関数
 
     .. math::
@@ -152,13 +151,12 @@ class BaseNetwork(BaseEstimator):
             for i in (range(n_samples)):
                 # 順伝播
                 a = np.dot(self.W, X[i])
-                z = step(a)
+                z = _step(a)
                 n_predict = np.sum(z)
-                n_target = inverse_scaling_function(y[i], self.a, self.b)
-
+                n_target = _inverse__scaling_function(y[i], self.a, self.b)
                 # 修正するパーセプトロンを選択
                 index_list = self._search_index(a, n_target, n_predict)
-
+                # パーセプトロンを修正
                 if not len(index_list) == 0:
                     self.W[index_list, :] += self.eta * np.sign(n_target - n_predict) * X[i]
 
@@ -171,11 +169,11 @@ class BaseNetwork(BaseEstimator):
         prediction_list = []
 
         for x in X:
+            # 順伝播
             a = np.dot(self.W, x)
-            z = step(a)
+            z = _step(a)
             a2 = np.sum(z)
-
-            prediction = scaling_function(a2, self.a, self.b)
+            prediction = _scaling_function(a2, self.a, self.b)
             prediction_list.append(prediction)
         y = np.ravel(prediction_list)
         return y
