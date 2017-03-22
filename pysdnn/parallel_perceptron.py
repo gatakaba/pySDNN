@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
-""" Copyright (C) 2017 Yu Kabasawa
+"""
+PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.
 
-This is licensed under an MIT license. See the readme.md file
-for more information.
-
+PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,中間層から出力層の結合荷重を固定したものとみなすことができる.
 """
 
 from pysdnn.base_network import BaseNetwork
@@ -13,6 +12,7 @@ from pysdnn import utils
 
 
 class PP_A(BaseNetwork):
+    """ Parallel Peceptron Analogue"""
     def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
         super().__init__(hidden_layer_num, eta, verbose)
 
@@ -30,6 +30,7 @@ class PP_A(BaseNetwork):
 
 
 class PP_P(BaseNetwork):
+    """ Parallel Peceptron Pattern"""
     def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
         super().__init__(hidden_layer_num, eta, verbose)
 

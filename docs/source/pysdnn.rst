@@ -4,6 +4,14 @@ pysdnn package
 Submodules
 ----------
 
+pysdnn.base_network module
+--------------------------
+
+.. automodule:: pysdnn.base_network
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pysdnn.coding module
 --------------------
 

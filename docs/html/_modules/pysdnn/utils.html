@@ -175,13 +175,13 @@
 <div class="viewcode-block" id="step"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.step">[docs]</a><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; ステップ関数</span>
 
-<span class="sd">    .. math::</span>
-<span class="sd">        f(x) =</span>
-<span class="sd">        \\begin{cases}</span>
-<span class="sd">            1 (x &gt; 0) \\\\</span>
-<span class="sd">            0.5 (x = 0) \\\\</span>
-<span class="sd">            0 (x &lt; 0)</span>
-<span class="sd">        \\end{cases}</span>
+<span class="sd">.. math::</span>
+<span class="sd">    f(x) =</span>
+<span class="sd">    \\begin{cases}</span>
+<span class="sd">        1 (x &gt; 0) \\\\</span>
+<span class="sd">        0.5 (x = 0) \\\\</span>
+<span class="sd">        0 (x &lt; 0)</span>
+<span class="sd">    \\end{cases}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -198,48 +198,13 @@
 
 
 <div class="viewcode-block" id="scale"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.scale">[docs]</a><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 線形スケーリング関数</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            f(x) =  a x + b</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            入力データ</span>
-<span class="sd">        a : float</span>
-<span class="sd">            傾き</span>
-<span class="sd">        b : float</span>
-<span class="sd">            切片</span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            計算結果</span>
-<span class="sd">        &quot;&quot;&quot;</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
     <span class="k">return</span> <span class="n">y</span></div>
 
 
 <div class="viewcode-block" id="inverse_scale"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.inverse_scale">[docs]</a><span class="k">def</span> <span class="nf">inverse_scale</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 線形スケーリング逆関数</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            x =  \\frac{y-b}{a}</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">        入力データ</span>
-<span class="sd">    a : float</span>
-<span class="sd">        傾き</span>
-<span class="sd">    b : float</span>
-<span class="sd">        切片</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">        計算結果</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>
     <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>

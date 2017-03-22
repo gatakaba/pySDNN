@@ -1,11 +1,6 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
-""" Copyright (C) 2017 Yu Kabasawa
 
-This is licensed under an MIT license. See the readme.md file
-for more information.
-
-"""
 
 import numpy as np
 from sklearn.base import BaseEstimator
@@ -13,11 +8,87 @@ from sklearn.utils.validation import check_X_y, check_is_fitted
 from pysdnn import utils
 
 
-class BaseNetwork(BaseEstimator):
-    """ PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.
+def step(x):
+    """ ステップ関数
 
-    PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,
-    中間層から出力層の結合荷重を固定したものとみなすことができる.
+.. math::
+    f(x) =
+    \\begin{cases}
+        1 (x > 0) \\\\
+        0.5 (x = 0) \\\\
+        0 (x < 0)
+    \\end{cases}
+
+    Parameters
+    ----------
+    x : float or array-like, shape = (sample_num,)
+        入力データ
+
+    Returns
+    -------
+    y : float or array-like, shape = (sample_num,)
+        計算結果
+    """
+    y = (np.sign(x) + 1) / 2.0
+    return y
+
+
+def scaling_function(x, a, b):
+    """ スケーリング関数
+
+    .. math::
+        f(x) =  a x + b
+
+    Parameters
+    ----------
+    x : float or array-like, shape = (sample_num,)
+        入力データ
+    a : float
+        傾き
+    b : float
+        切片
+
+    Returns
+    -------
+    y : float or array-like, shape = (sample_num,)
+        計算結果
+    """
+    y = a * x + b
+    return y
+
+
+def inverse_scaling_function(y, a, b):
+    """ スケーリング関数の逆関数
+
+    .. math::
+        x =  \\frac{y-b}{a}
+
+    Parameters
+    ----------
+    y : float or array-like, shape = (sample_num,)
+        入力データ
+    a : float
+        傾き
+    b : float
+        切片
+
+    Returns
+    -------
+    x : float or array-like, shape = (sample_num,)
+        計算結果
+    """
+
+    x = (y - b) / a
+    return x
+
+
+class BaseNetwork(BaseEstimator):
+    """ Base NetworkクラスはPP,SDNNの抽象クラスです.
+
+    本クラスはSDNN[R1]の第3-5層目の順伝播及び教師あり学習を用いた第3-4層の重み荷重調節機能を有します.
+
+
+    .. [1] 野中和明, 田中文英, and 森田昌彦. "階層型ニューラルネットの 2 変数関数近似能力の比較." 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.
 
     Parameters
     ----------
@@ -38,54 +109,6 @@ class BaseNetwork(BaseEstimator):
         self.verbose = verbose
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
-
-    def scaling_function(self, x):
-        """ スケーリング関数
-
-        .. math::
-            f(x) =  a x + b
-
-        Parameters
-        ----------
-        x : float or array-like, shape = (sample_num,)
-            入力データ
-        a : float
-            傾き
-        b : float
-            切片
-
-        Returns
-        -------
-        y : float or array-like, shape = (sample_num,)
-            計算結果
-        """
-        y = self.a * x + self.b
-        return y
-
-    def inverse_scaling_function(self, y):
-        """ スケーリング関数の逆関数
-
-        .. math::
-            x =  \\frac{y-b}{a}
-
-        Parameters
-        ----------
-        y : float or array-like, shape = (sample_num,)
-            入力データ
-        a : float
-            傾き
-        b : float
-            切片
-
-        Returns
-        -------
-        x : float or array-like, shape = (sample_num,)
-            計算結果
-        """
-
-        x = (y - self.b) / self.a
-        return x
-
 
     @staticmethod
     def _search_index(a, n_target, n_predict):
@@ -118,22 +141,20 @@ class BaseNetwork(BaseEstimator):
         index_list = np.sort(index_list)
         return index_list
 
-
     def fit(self, X, y):
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
 
         self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features])
-
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
 
         for j in range(100):
             for i in (range(n_samples)):
                 # 順伝播
                 a = np.dot(self.W, X[i])
-                z = utils.step(a)
+                z = step(a)
                 n_predict = np.sum(z)
-                n_target = self.inverse_scaling_function(y[i])
+                n_target = inverse_scaling_function(y[i], self.a, self.b)
 
                 # 修正するパーセプトロンを選択
                 index_list = self._search_index(a, n_target, n_predict)
@@ -145,21 +166,19 @@ class BaseNetwork(BaseEstimator):
                 print(j, self.score(self.X_train_, self.y_train_))
         return self
 
-
     def predict(self, X):
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
 
         for x in X:
             a = np.dot(self.W, x)
-            z = utils.step(a)
+            z = step(a)
             a2 = np.sum(z)
 
-            prediction = self.scaling_function(a2)
+            prediction = scaling_function(a2, self.a, self.b)
             prediction_list.append(prediction)
         y = np.ravel(prediction_list)
         return y
-
 
     def score(self):
         pass

@@ -127,113 +127,31 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pysdnn.selective_desensitization_neural_network</h1><div class="highlight"><pre>
-<span></span><span class="c1"># coding:utf-8</span>
-<span class="sd">&quot;&quot;&quot; Copyright (C) 2017 Yu Kabasawa</span>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
 
-<span class="sd">This is licensed under an MIT license. See the readme.MD file</span>
-<span class="sd">for more information.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">RegressorMixin</span>
+<span class="kn">from</span> <span class="nn">pysdnn.base_network</span> <span class="k">import</span> <span class="n">BaseNetwork</span>
 <span class="kn">from</span> <span class="nn">pysdnn.coding</span> <span class="k">import</span> <span class="n">SelectiveDesensitization</span>
 
-<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
 
+<div class="viewcode-block" id="SDNN"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN">[docs]</a><span class="k">class</span> <span class="nc">SDNN</span><span class="p">(</span><span class="n">BaseNetwork</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selective Desensitization Neural Network&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SDNN"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN">[docs]</a><span class="k">class</span> <span class="nc">SDNN</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span> <span class="o">=</span> <span class="n">hidden_layer_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern_manager</span> <span class="o">=</span> <span class="n">SelectiveDesensitization</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">division_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="SDNN.hidden_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.hidden_function">[docs]</a>    <span class="k">def</span> <span class="nf">hidden_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span></div>
-
-<div class="viewcode-block" id="SDNN.activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-        <span class="k">return</span> <span class="n">y</span></div>
-
-<div class="viewcode-block" id="SDNN.inverse_activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.inverse_activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
-        <span class="k">return</span> <span class="n">x</span></div>
-
-    <span class="k">def</span> <span class="nf">_search_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        n_target &gt; n_predictの場合、(n_target-n_predict)個のパーセプトロンを1が出るように修正</span>
-<span class="sd">        修正するパーセプトロンは0以下の内、内部電位が高いパーセプトロン</span>
-
-<span class="sd">        n_target &lt; n_predictの場合、(n_predict-n_target)個のパーセプトロンを0が出るように修正</span>
-<span class="sd">        修正するパーセプトロンは0以上の内、内部電位が低いパーセプトロン</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">error_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="n">error_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">elif</span> <span class="n">n_target</span> <span class="o">&gt;</span> <span class="n">n_predict</span><span class="p">:</span>
-            <span class="n">negative_perceptron_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_perceptron_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">error_num</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">negative_perceptron_values</span><span class="p">[:</span><span class="n">error_num</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">negative_perceptron_values</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">positive_perceptron_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_perceptron_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">error_num</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">positive_perceptron_values</span><span class="p">[:</span><span class="n">error_num</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">positive_perceptron_values</span>
-
-        <span class="n">index_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">fix_perceptron_value</span> <span class="ow">in</span> <span class="n">fix_perceptron_values</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">fix_perceptron_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">index_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">index_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SDNN.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern_manager</span><span class="o">.</span><span class="n">make_binary_vector_table</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">patterned_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_manager</span><span class="o">.</span><span class="n">num_to_sd_pattern</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">patterned_X</span><span class="o">.</span><span class="n">shape</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">n_features</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)):</span>
-                <span class="c1"># feedforward</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">patterned_X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">n_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-                <span class="n">n_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_activate_function</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-                <span class="c1"># 修正するパーセプトロンを選択</span>
-                <span class="n">index_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">index_list</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)</span> <span class="o">*</span> <span class="n">patterned_X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="n">SelectiveDesensitization</span><span class="p">(</span><span class="n">code_pattern_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">input_division_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="n">input_dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SDNN.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_train_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_train_&quot;</span><span class="p">])</span>
-        <span class="n">prediction_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">patterned_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_manager</span><span class="o">.</span><span class="n">num_to_sd_pattern</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">patterned_x</span> <span class="ow">in</span> <span class="n">patterned_X</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">patterned_x</span><span class="p">)</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-            <span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
-            <span class="n">prediction_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">prediction_list</span><span class="p">)</span>
+        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span></div></div>
 </pre></div>
 
