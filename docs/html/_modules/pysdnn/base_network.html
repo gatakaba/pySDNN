@@ -139,23 +139,23 @@
 <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; ステップ関数</span>
 
-<span class="sd">.. math::</span>
-<span class="sd">    f(x) =</span>
-<span class="sd">    \\begin{cases}</span>
-<span class="sd">        1 (x &gt; 0) \\\\</span>
-<span class="sd">        0.5 (x = 0) \\\\</span>
-<span class="sd">        0 (x &lt; 0)</span>
-<span class="sd">    \\end{cases}</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        f(x) =</span>
+<span class="sd">        \\begin{cases}</span>
+<span class="sd">            1 (x &gt; 0) \\\\</span>
+<span class="sd">            0.5 (x = 0) \\\\</span>
+<span class="sd">            0 (x &lt; 0)</span>
+<span class="sd">        \\end{cases}</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">        入力データ</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
+<span class="sd">            入力データ</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">        計算結果</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
+<span class="sd">            計算結果</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
     <span class="k">return</span> <span class="n">y</span>
@@ -229,12 +229,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span> <span class="o">=</span> <span class="n">hidden_layer_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span> <span class="o">=</span> <span class="n">hidden_layer_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
 
@@ -270,6 +271,7 @@
         <span class="k">return</span> <span class="n">index_list</span>
 
 <div class="viewcode-block" id="BaseNetwork.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the BaseNetwork model according to the given training data.&quot;&quot;&quot;</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
 
@@ -294,6 +296,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="BaseNetwork.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform regression on samples in X.&quot;&quot;&quot;</span>
         <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_train_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_train_&quot;</span><span class="p">])</span>
         <span class="n">prediction_list</span> <span class="o">=</span> <span class="p">[]</span>
 

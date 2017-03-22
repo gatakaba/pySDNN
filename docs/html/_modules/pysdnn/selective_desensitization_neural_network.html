@@ -132,27 +132,77 @@
 
 <span class="kn">from</span> <span class="nn">pysdnn.base_network</span> <span class="k">import</span> <span class="n">BaseNetwork</span>
 <span class="kn">from</span> <span class="nn">pysdnn.coding</span> <span class="k">import</span> <span class="n">SelectiveDesensitization</span>
+<span class="kn">from</span> <span class="nn">pysdnn.utils</span> <span class="k">import</span> <span class="n">add_interception</span>
 
 
 <div class="viewcode-block" id="SDNN"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN">[docs]</a><span class="k">class</span> <span class="nc">SDNN</span><span class="p">(</span><span class="n">BaseNetwork</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selective Desensitization Neural Network&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Selective Desensitization Neural Network</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code_pattern_dim : int, optional (default = 100)</span>
+<span class="sd">        パターンコードベクトルの次元数 n</span>
+<span class="sd">    input_division_num : int, optional (default = 100)</span>
+<span class="sd">        実数の分割数 q</span>
+<span class="sd">    reversal_num : int, optinal (default = 1)</span>
+<span class="sd">        反転数 r</span>
+<span class="sd">    hidden_layer_num : int, optional (default = 280)</span>
+<span class="sd">        中間素子数</span>
+<span class="sd">    eta : float, optional (default = 0.001)</span>
+<span class="sd">        学習率</span>
+<span class="sd">    verbose : bool, optional (default = False)</span>
+<span class="sd">        詳細な出力を有効化</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_pattern_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">input_division_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span> <span class="o">=</span> <span class="n">code_pattern_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">=</span> <span class="n">input_division_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span> <span class="o">=</span> <span class="n">reversal_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SDNN.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="n">SelectiveDesensitization</span><span class="p">(</span><span class="n">code_pattern_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">input_division_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                                           <span class="n">input_dim</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;Fit the SDNN model according to the given training data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num, input_dim)</span>
+<span class="sd">            Training vectors.</span>
+<span class="sd">        y : array-like, shape = (sample_num,)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">            Returns self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">input_dim</span> <span class="o">=</span> <span class="n">intercepted_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sd</span> <span class="o">=</span> <span class="n">SelectiveDesensitization</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span>
+                                           <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">)</span>
+        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="SDNN.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.selective_desensitization_neural_network.SDNN.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">y</span></div></div>
+        <span class="sd">&quot;&quot;&quot;Perform regression on samples in X.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num,input_dim)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_pred : array-like, shape = (sample_num, )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">sd_code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sd</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sd_code_X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y_pred</span></div></div>
 </pre></div>
 
            </div>
