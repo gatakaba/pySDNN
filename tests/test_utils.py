@@ -23,11 +23,3 @@ class TestCoding(unittest.TestCase):
         assert utils.step(-3) == 0.0
         assert utils.step(0) == 0.5
         assert utils.step(7) == 1.0
-
-    def test_scaling(self):
-        x, a, b = 2, 3, 5
-        assert utils.scale(x, a, b) == a * x + b
-        assert utils.inverse_scale(x, a, b) == (x - b) / a
-
-        y = utils.scale(x, a, b)
-        assert utils.inverse_scale(y, a, b) == x

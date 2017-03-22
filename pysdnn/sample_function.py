@@ -5,6 +5,7 @@
 This is licensed under an MIT license. See the readme.md file
 for more information.
 """
+import numpy as np
 
 
 def linear(X):

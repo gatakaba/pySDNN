@@ -11,6 +11,7 @@ import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
 from pysdnn import utils
+from pysdnn.coding import PatternCoding
 
 
 class PP(BaseEstimator):
@@ -25,13 +26,11 @@ class PP(BaseEstimator):
         中間層の素子数
     eta: float
         学習係数
-    is_pattern : bool
-        パターンコードに変換した値を入力に用いる
     verbose : bool
         詳細な出力を有効にする
     """
 
-    def __init__(self, hidden_layer_num=300, eta=10 ** -3, is_pattern=False, verbose=False):
+    def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
         self.W = None
         self.n_samples = None
         self.n_features = None
@@ -40,7 +39,14 @@ class PP(BaseEstimator):
         self.verbose = verbose
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
-        self.is_pattern = is_pattern
+
+    def activate_function(self, x):
+        y = self.a * x + self.b
+        return y
+
+    def inverse_activate_function(self, y):
+        x = (y - self.b) / self.a
+        return x
 
     @staticmethod
     def _search_index(a, n_target, n_predict):
@@ -73,13 +79,17 @@ class PP(BaseEstimator):
         index_list = np.sort(index_list)
         return index_list
 
-    def fit(self, X, y):
+    def fit(self, X, y, is_intercepted=True):
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
-        intercepted_X = utils.add_columns(X)
+        if is_intercepted:
+            intercepted_X = utils.add_columns(X)
+            self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features + 1])
+        else:
+            intercepted_X = X
+            self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features])
 
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
-        self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features + 1])
 
         for j in range(100):
             for i in (range(n_samples)):
@@ -87,7 +97,7 @@ class PP(BaseEstimator):
                 a = np.dot(self.W, intercepted_X[i])
                 z = utils.step(a)
                 n_predict = np.sum(z)
-                n_target = utils.inverse_scale(y[i], self.a, self.b)
+                n_target = self.inverse_activate_function(y[i])
 
                 # 修正するパーセプトロンを選択
                 index_list = self._search_index(a, n_target, n_predict)
@@ -99,17 +109,20 @@ class PP(BaseEstimator):
                 print(j, self.score(self.X_train_, self.y_train_))
         return self
 
-    def predict(self, X):
+    def predict(self, X, is_intercepted=True):
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
-        intercepted_X = utils.add_columns(X)
 
+        if is_intercepted:
+            intercepted_X = utils.add_columns(X)
+        else:
+            intercepted_X = X
         for intercepted_x in intercepted_X:
             a = np.dot(self.W, intercepted_x)
             z = utils.step(a)
             a2 = np.sum(z)
 
-            prediction = utils.scale(a2, self.a, self.b)
+            prediction = self.activate_function(a2)
             prediction_list.append(prediction)
         y = np.ravel(prediction_list)
         return y
@@ -118,10 +131,10 @@ class PP(BaseEstimator):
         pass
 
 
-'''
+class PP_P(PP):
+    def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
+        super().__init__(hidden_layer_num, eta, verbose)
 
-class ParallelPerceptronPattern(BaseEstimator):
-    def __init__(self, hidden_layer_num=1000, eta=10 ** -3, verbose=False):
         self.W = None
         self.n_samples = None
         self.n_features = None
@@ -130,95 +143,15 @@ class ParallelPerceptronPattern(BaseEstimator):
         self.verbose = verbose
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
-        self.pattern_manager = PatternCoding(binary_vector_dim=100, division_num=100, reversal_num=1)
 
-    def hidden_function(self, x):
-        return (np.sign(x) + 1) / 2.0
-
-    def activate_function(self, x):
-        y = self.a * x + self.b
-        return y
-
-    def inverse_activate_function(self, y):
-        x = (y - self.b) / self.a
-        return x
-
-    def _search_index(self, a, n_target, n_predict):
-        # 修正するパーセプトロンを選ぶ
-        error_num = int(round(np.abs(n_target - n_predict)))
-        if error_num == 0:
-            return []
-        elif n_target > n_predict:
-            """
-                n_target > n_predictの場合、(n_target-n_predict)個のパーセプトロンを1が出るように修正
-                修正するパーセプトロンは0以下のパーセプトロンの内最も内部電位が高いパーセプトロン
-            """
-            negative_perceptron_values = np.sort(a[a < 0])[::-1]
-            if len(negative_perceptron_values) > error_num:
-                fix_perceptron_values = negative_perceptron_values[:error_num]
-            else:
-                fix_perceptron_values = negative_perceptron_values
-        else:
-            positive_perceptron_values = np.sort(a[a > 0])
-            if len(positive_perceptron_values) > error_num:
-                fix_perceptron_values = positive_perceptron_values[:error_num]
-            else:
-                fix_perceptron_values = positive_perceptron_values
-
-        index_list = []
-        for fix_perceptron_value in fix_perceptron_values:
-            index = np.where(a == fix_perceptron_value)[0][0]
-            index_list.append(index)
-        index_list = np.sort(index_list)
-        return index_list
+        self.pc = None
 
     def fit(self, X, y):
-        X, y = check_X_y(X, y, multi_output=False)
-        self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
-
-        intercepted_X = BaseEstimator.add_columns(X)
-        self.pattern_manager.make_binary_vector_tables(intercepted_X.shape[1])
-        patterned_X = self.pattern_manager.num_to_pattern(intercepted_X)
-
-        n_samples, n_features = patterned_X.shape
-        self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features])
-
-        for j in range(100):
-            for i in (range(n_samples)):
-                # feedforward
-                a = np.dot(self.W, patterned_X[i])
-                z = self.hidden_function(a)
-                n_predict = np.sum(z)
-                n_target = self.inverse_activate_function(y[i])
-
-                # 修正するパーセプトロンを選択
-                index_list = self._search_index(a, n_target, n_predict)
-
-                if not len(index_list) == 0:
-                    self.W[index_list, :] += self.eta * np.sign(n_target - n_predict) * patterned_X[i]
-                self.a -= (self.a * n_predict + self.b - y[i]) * n_predict * 10 ** -6
-                self.b -= (self.a * n_predict + self.b - y[i]) * 10 ** -6
-
-            if self.verbose:
-                print(j, self.score(self.X_train_, self.y_train_))
-
-        return self
+        self.pc = PatternCoding(code_pattern_dim=100, input_division_num=100, reversal_num=1, input_dim=X.shape[1])
+        code_X = self.pc.coding(X, 0, 1)
+        super().fit(code_X, y, is_intercepted=False)
 
     def predict(self, X):
-        check_is_fitted(self, ["X_train_", "y_train_"])
-        prediction_list = []
-
-        intercepted_X = BaseEstimator.add_columns(X)
-        patterned_X = self.pattern_manager.num_to_pattern(intercepted_X)
-
-        for patterned_x in patterned_X:
-            a = np.dot(self.W, patterned_x)
-            z = self.hidden_function(a)
-            a2 = np.sum(z)
-
-            prediction = self.activate_function(a2)
-            prediction_list.append(prediction)
-        y = np.ravel(prediction_list)
+        code_X = self.pc.coding(X, 0, 1)
+        y = super().predict(code_X, is_intercepted=False)
         return y
-
-'''
