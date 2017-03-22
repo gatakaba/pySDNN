@@ -28,6 +28,14 @@ pysdnn.parallel_perceptron module
     :undoc-members:
     :show-inheritance:
 
+pysdnn.sample_function module
+-----------------------------
+
+.. automodule:: pysdnn.sample_function
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 pysdnn.selective_desensitization_neural_network module
 ------------------------------------------------------
 

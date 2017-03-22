@@ -86,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.coding">pysdnn.coding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.multi_layer_perceptron">pysdnn.multi_layer_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.parallel_perceptron">pysdnn.parallel_perceptron module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.sample_function">pysdnn.sample_function module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.selective_desensitization_neural_network">pysdnn.selective_desensitization_neural_network module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysdnn-simple-perceptron-module">pysdnn.simple_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.utils">pysdnn.utils module</a></li>
@@ -389,6 +390,130 @@ for more information.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pysdnn.sample_function">
+<span id="pysdnn-sample-function-module"></span><h2>pysdnn.sample_function module<a class="headerlink" href="#module-pysdnn.sample_function" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2017 Yu Kabasawa</p>
+<p>This is licensed under an MIT license. See the readme.md file
+for more information.</p>
+<dl class="function">
+<dt id="pysdnn.sample_function.cylinder">
+<code class="descclassname">pysdnn.sample_function.</code><code class="descname">cylinder</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sample_function.html#cylinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sample_function.cylinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>円筒関数</p>
+<div class="math">
+\[\begin{split}f(x,y) =
+\begin{cases}
+    1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\
+    0 (otherwise)
+\end{cases}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pysdnn.sample_function.gauss">
+<code class="descclassname">pysdnn.sample_function.</code><code class="descname">gauss</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sample_function.html#gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sample_function.gauss" title="Permalink to this definition">¶</a></dt>
+<dd><p>ガウス関数</p>
+<div class="math">
+\[f(x,y) = \exp(-(x-0.5)^{2} -(y-0.5)^{2})\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pysdnn.sample_function.linear">
+<code class="descclassname">pysdnn.sample_function.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sample_function.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sample_function.linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>線形関数</p>
+<div class="math">
+\[f(x) = \sum_{i} x_{i}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, input_dim)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pysdnn.sample_function.nonaka">
+<code class="descclassname">pysdnn.sample_function.</code><code class="descname">nonaka</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sample_function.html#nonaka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sample_function.nonaka" title="Permalink to this definition">¶</a></dt>
+<dd><p>野中関数[R1]_</p>
+<div class="math">
+\[\begin{split}f(x,y) =
+\begin{cases}
+    1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\
+    \frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
+\end{cases}\end{split}\]</div>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R1]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<blockquote>
+<div><p>入力データ</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<blockquote class="last">
+<div><p>計算結果</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pysdnn.selective_desensitization_neural_network">
 <span id="pysdnn-selective-desensitization-neural-network-module"></span><h2>pysdnn.selective_desensitization_neural_network module<a class="headerlink" href="#module-pysdnn.selective_desensitization_neural_network" title="Permalink to this headline">¶</a></h2>
 <p>Copyright (C) 2017 Yu Kabasawa</p>
@@ -471,26 +596,32 @@ for more information.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pysdnn.utils.cylinder">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">cylinder</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#cylinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.cylinder" title="Permalink to this definition">¶</a></dt>
-<dd><p>円筒関数</p>
-<div class="math">
-\[\begin{split}f(x,y) =
-\begin{cases}
-    1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\
-    0 (otherwise)
-\end{cases}\end{split}\]</div>
+<dt id="pysdnn.utils.inverse_scale">
+<code class="descclassname">pysdnn.utils.</code><code class="descname">inverse_scale</code><span class="sig-paren">(</span><em>y</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#inverse_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.inverse_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>線形スケーリング逆関数</p>
+<blockquote>
+<div><div class="math">
+\[x =  \frac{y-b}{a}\]</div>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote>
 <div><p>入力データ</p>
 </div></blockquote>
+<p><strong>a</strong> : float</p>
+<blockquote>
+<div><p>傾き</p>
+</div></blockquote>
+<p><strong>b</strong> : float</p>
+<blockquote>
+<div><p>切片</p>
+</div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote class="last">
 <div><p>計算結果</p>
 </div></blockquote>
@@ -501,84 +632,30 @@ for more information.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pysdnn.utils.gauss">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">gauss</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.gauss" title="Permalink to this definition">¶</a></dt>
-<dd><p>ガウス関数</p>
+<dt id="pysdnn.utils.scale">
+<code class="descclassname">pysdnn.utils.</code><code class="descname">scale</code><span class="sig-paren">(</span><em>x</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>線形スケーリング関数</p>
 <div class="math">
-\[f(x,y) = \exp(-(x-0.5)^{2} -(y-0.5)^{2})\]</div>
+\[f(x) =  a x + b\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote>
 <div><p>入力データ</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
-<blockquote class="last">
-<div><p>計算結果</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pysdnn.utils.linear">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>線形関数</p>
-<div class="math">
-\[f(x) = \sum_{i} x_{i}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, input_dim)</p>
+<p><strong>a</strong> : float</p>
 <blockquote>
-<div><p>入力データ</p>
+<div><p>傾き</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
-<blockquote class="last">
-<div><p>計算結果</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pysdnn.utils.nonaka">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">nonaka</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#nonaka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.nonaka" title="Permalink to this definition">¶</a></dt>
-<dd><p>野中関数[R1]_</p>
-<div class="math">
-\[\begin{split}f(x,y) =
-\begin{cases}
-    1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\
-    \frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
-\end{cases}\end{split}\]</div>
-<table class="docutils citation" frame="void" id="r1" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[R1]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
-</tbody>
-</table>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (samples_num, 2)</p>
+<p><strong>b</strong> : float</p>
 <blockquote>
-<div><p>入力データ</p>
+<div><p>切片</p>
 </div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : array-like, shape = (samples_num,)</p>
+<p><strong>Returns</strong></p>
+<p><strong>&#8212;&#8212;-</strong></p>
+<p><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote class="last">
 <div><p>計算結果</p>
 </div></blockquote>
@@ -591,24 +668,25 @@ for more information.</p>
 <dl class="function">
 <dt id="pysdnn.utils.step">
 <code class="descclassname">pysdnn.utils.</code><code class="descname">step</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>step function</p>
+<dd><p>ステップ関数</p>
 <div class="math">
 \[\begin{split}f(x) =
 \begin{cases}
-    1 (x \geq 0) \\
+    1 (x &gt; 0) \\
+    0.5 (x = 0) \\
     0 (x &lt; 0)
 \end{cases}\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num)</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote>
 <div><p>入力データ</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
 <blockquote class="last">
 <div><p>計算結果</p>
 </div></blockquote>
