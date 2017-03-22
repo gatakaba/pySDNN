@@ -4,14 +4,6 @@ pysdnn package
 Submodules
 ----------
 
-pysdnn.base module
-------------------
-
-.. automodule:: pysdnn.base
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pysdnn.coding module
 --------------------
 
@@ -36,10 +28,10 @@ pysdnn.parallel_perceptron module
     :undoc-members:
     :show-inheritance:
 
-pysdnn.sdnn module
-------------------
+pysdnn.selective_desensitization_neural_network module
+------------------------------------------------------
 
-.. automodule:: pysdnn.sdnn
+.. automodule:: pysdnn.selective_desensitization_neural_network
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,10 +44,10 @@ pysdnn.simple_perceptron module
     :undoc-members:
     :show-inheritance:
 
-pysdnn.utilities module
------------------------
+pysdnn.utils module
+-------------------
 
-.. automodule:: pysdnn.utilities
+.. automodule:: pysdnn.utils
     :members:
     :undoc-members:
     :show-inheritance:
