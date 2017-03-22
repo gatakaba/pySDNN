@@ -1,26 +1,40 @@
-# coding:utf-8
+#! /usr/bin/env python
+# -*- coding:utf-8 -*-
+""" Copyright (C) 2017 Yu Kabasawa
+
+This is licensed under an MIT license. See the readme.md file
+for more information.
+"""
 
 import numpy as np
 from sklearn.utils.validation import check_X_y, check_is_fitted, check_array
 
 
-def add_columns(X):
-    """ add Intercept
+def add_columns(input_array):
+    """ 切片を加える
+
+    切片は末尾に加えられる
+
+    .. math::
+
+        \mathbf{p}_{i,j} = \\frac{\mathbf{p}_{i} + 1}{2} \mathbf{p}_{j}
+
+        \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}
+
 
     Parameters
     ----------
-     X : array-like, shape = (n_samples, n_features)
-            Input array
+     input_array : array-like, shape = (samples_num, input_dim)
+            入力データ
 
     Returns
     -------
-    intercepted_X : array of shape = (n_samples, n_features + 1)
-            Intercepted array
+    intercepted_X : array of shape = (samples_num, input_dim + 1)
+            切片を加えられた入力データ
     """
 
-    X = check_array(X)
-    intercepted_X = np.c_[np.ones(len(X)), X]
-    return intercepted_X
+    intercepted_array = np.c_[input_array, np.ones(len(input_array))]
+    return intercepted_array
 
 
 def linear(X):
