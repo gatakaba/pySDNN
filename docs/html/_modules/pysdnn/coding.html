@@ -334,7 +334,7 @@
 
 <span class="sd">        \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}</span>
 
-<span class="sd">    入力次元がN次元の場合, :math:`N(N-1)` 個の選択的不感化されたパターンコードが生成されます.</span>
+<span class="sd">    入力次元が :math:`N` 次元の場合, :math:`N(N-1)` 個の選択的不感化されたパターンコードを出力します.</span>
 
 
 <span class="sd">    Parameters</span>
@@ -349,8 +349,8 @@
 <span class="sd">        入力データの次元数 N</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_pattern_dim</span><span class="p">,</span> <span class="n">input_division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">code_pattern_dim</span><span class="p">,</span> <span class="n">input_division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_pattern_to_sd_pattern</span><span class="p">(</span><span class="n">code_pattern1</span><span class="p">,</span> <span class="n">code_pattern2</span><span class="p">):</span>
@@ -358,9 +358,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pattern1 : ndarray, shape = (code_pattern_dim,)</span>
+<span class="sd">        code_pattern1 : ndarray, shape = (code_pattern_dim,)</span>
 <span class="sd">            subject pattern</span>
-<span class="sd">        pattern2 : ndarray, shape =  (code_pattern_dim,)</span>
+<span class="sd">        code_pattern2 : ndarray, shape =  (code_pattern_dim,)</span>
 <span class="sd">            context pattern</span>
 
 <span class="sd">        Returns</span>
@@ -435,13 +435,16 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) * binary_vector_dim,)</span>
+<span class="sd">        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) * code_pattern_dim,)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 入力データが0次元(スカラー)の場合</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data is not allowed to be scalar.input data must be 1d or 2d array&#39;</span><span class="p">)</span>
 
         <span class="c1"># 入力データが1次元の場合</span>
-        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_sd_code</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">code_pattern</span>
+        <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sd_code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_sd_code</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">sd_code_pattern</span>
 
         <span class="c1"># 入力データが2次元の場合</span>
         <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -450,7 +453,8 @@
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
                 <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_sd_code</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
                 <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code_pattern</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
+            <span class="n">sd_code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">sd_code_pattern</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data dimensions must be 1d or 2d&#39;</span><span class="p">)</span></div></div>
 </pre></div>
