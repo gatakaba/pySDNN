@@ -93,7 +93,7 @@ class PP(BaseEstimator):
             for i in (range(n_samples)):
                 # 順伝播
                 a = np.dot(self.W, intercepted_X[i])
-                z = self.hidden_function(a)
+                z = step(a)
                 n_predict = np.sum(z)
                 n_target = self.inverse_activate_function(y[i])
 
@@ -114,7 +114,7 @@ class PP(BaseEstimator):
 
         for intercepted_x in intercepted_X:
             a = np.dot(self.W, intercepted_x)
-            z = self.hidden_function(a)
+            z = step(a)
             a2 = np.sum(z)
 
             prediction = self.activate_function(a2)

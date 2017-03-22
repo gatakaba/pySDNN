@@ -44,14 +44,15 @@ def add_columns(input_array):
 
 
 def step(x):
-    """ step function
+    """ ステップ関数
 
-    .. math::
-        f(x) =
-        \\begin{cases}
-            1 (x \geq 0) \\\\
-            0 (x < 0)
-        \\end{cases}
+.. math::
+    f(x) =
+    \\begin{cases}
+        1 (x > 0) \\\\
+        0.5 (x = 0) \\\\
+        0 (x < 0)
+    \\end{cases}
 
     Parameters
     ----------
@@ -66,3 +67,50 @@ def step(x):
     y = (np.sign(x) + 1) / 2.0
     return y
 
+
+def scale(x, a, b):
+    """ 線形スケーリング関数
+
+    .. math::
+        f(x) =  a x + b
+
+    Parameters
+    ----------
+    x : float or array-like, shape = (sample_num,)
+        入力データ
+    a : float
+        傾き
+    b : float
+        切片
+
+    Returns
+    -------
+    y : float or array-like, shape = (sample_num,)
+        計算結果
+    """
+    y = a * x + b
+    return y
+
+
+def inverse_scale(y, a, b):
+    """ 線形スケーリング逆関数
+
+    .. math::
+        x =  \\frac{y-b}{a}
+
+    Parameters
+    ----------
+    y : float or array-like, shape = (sample_num,)
+        入力データ
+    a : float
+        傾き
+    b : float
+        切片
+
+    Returns
+    -------
+    x : float or array-like, shape = (sample_num,)
+        計算結果
+    """
+    x = (y - b) / a
+    return x
