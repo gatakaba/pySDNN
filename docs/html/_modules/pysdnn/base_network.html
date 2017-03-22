@@ -134,13 +134,86 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
-<span class="kn">from</span> <span class="nn">pysdnn</span> <span class="k">import</span> <span class="n">utils</span>
+
+
+<span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; ステップ関数</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">    f(x) =</span>
+<span class="sd">    \\begin{cases}</span>
+<span class="sd">        1 (x &gt; 0) \\\\</span>
+<span class="sd">        0.5 (x = 0) \\\\</span>
+<span class="sd">        0 (x &lt; 0)</span>
+<span class="sd">    \\end{cases}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        入力データ</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        計算結果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="k">return</span> <span class="n">y</span>
+
+
+<span class="k">def</span> <span class="nf">_scaling_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; スケーリング関数</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        f(x) =  a x + b</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        入力データ</span>
+<span class="sd">    a : float</span>
+<span class="sd">        傾き</span>
+<span class="sd">    b : float</span>
+<span class="sd">        切片</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        計算結果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">y</span>
+
+
+<span class="k">def</span> <span class="nf">_inverse__scaling_function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; スケーリング関数の逆関数</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        x =  \\frac{y-b}{a}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        入力データ</span>
+<span class="sd">    a : float</span>
+<span class="sd">        傾き</span>
+<span class="sd">    b : float</span>
+<span class="sd">        切片</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
+<span class="sd">        計算結果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>
+    <span class="k">return</span> <span class="n">x</span>
 
 
 <div class="viewcode-block" id="BaseNetwork"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork">[docs]</a><span class="k">class</span> <span class="nc">BaseNetwork</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base NetworkクラスはPP,,SDNNの抽象クラスです.</span>
+    <span class="sd">&quot;&quot;&quot; Base NetworkクラスはPP,SDNNの抽象クラスです.</span>
 
-<span class="sd">    SDNN[1]の第3~5層目の順伝播及び教師あり学習による第3層-第4層の重み荷重調節機能有します.</span>
+<span class="sd">    本クラスはSDNN[R1]の第3-5層目の順伝播及び教師あり学習を用いた第3-4層の重み荷重調節機能を有します.</span>
 
 
 <span class="sd">    .. [1] 野中和明, 田中文英, and 森田昌彦. &quot;階層型ニューラルネットの 2 変数関数近似能力の比較.&quot; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</span>
@@ -164,78 +237,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
-
-<div class="viewcode-block" id="BaseNetwork.scaling_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork.scaling_function">[docs]</a>    <span class="k">def</span> <span class="nf">scaling_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; スケーリング関数</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">            f(x) =  a x + b</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            入力データ</span>
-<span class="sd">        a : float</span>
-<span class="sd">            傾き</span>
-<span class="sd">        b : float</span>
-<span class="sd">            切片</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            計算結果</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-        <span class="k">return</span> <span class="n">y</span></div>
-
-<div class="viewcode-block" id="BaseNetwork.inverse_scaling_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork.inverse_scaling_function">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_scaling_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; スケーリング関数の逆関数</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">            x =  \\frac{y-b}{a}</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            入力データ</span>
-<span class="sd">        a : float</span>
-<span class="sd">            傾き</span>
-<span class="sd">        b : float</span>
-<span class="sd">            切片</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            計算結果</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
-        <span class="k">return</span> <span class="n">x</span></div>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BaseNetwork.step"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.base_network.BaseNetwork.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; ステップ関数</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        f(x) =</span>
-<span class="sd">        \\begin{cases}</span>
-<span class="sd">            1 (x &gt; 0) \\\\</span>
-<span class="sd">            0.5 (x = 0) \\\\</span>
-<span class="sd">            0 (x &lt; 0)</span>
-<span class="sd">        \\end{cases}</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            入力データ</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
-<span class="sd">            計算結果</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
-        <span class="k">return</span> <span class="n">y</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">):</span>
@@ -279,13 +280,12 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)):</span>
                 <span class="c1"># 順伝播</span>
                 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">_step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
                 <span class="n">n_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-                <span class="n">n_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_scaling_function</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
+                <span class="n">n_target</span> <span class="o">=</span> <span class="n">_inverse__scaling_function</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
                 <span class="c1"># 修正するパーセプトロンを選択</span>
                 <span class="n">index_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">)</span>
-
+                <span class="c1"># パーセプトロンを修正</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">index_list</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
@@ -298,11 +298,11 @@
         <span class="n">prediction_list</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
+            <span class="c1"># 順伝播</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">_step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
             <span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">_scaling_function</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
             <span class="n">prediction_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">prediction_list</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">y</span></div>
