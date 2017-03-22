@@ -28,8 +28,4 @@ class TestSDNN(unittest.TestCase):
         self.sdnn.fit(self.train_X, self.train_y)
         self.sdnn.predict(self.test_X)
 
-    """
-    def test_estimator(self):
-        check_estimator(MultiLayerPerceptronRegression)
 
-    """

@@ -69,48 +69,12 @@ def step(x):
 
 
 def scale(x, a, b):
-    """ 線形スケーリング関数
 
-    .. math::
-        f(x) =  a x + b
-
-    Parameters
-    ----------
-    x : float or array-like, shape = (sample_num,)
-        入力データ
-    a : float
-        傾き
-    b : float
-        切片
-
-    Returns
-    -------
-    y : float or array-like, shape = (sample_num,)
-        計算結果
-    """
     y = a * x + b
     return y
 
 
 def inverse_scale(y, a, b):
-    """ 線形スケーリング逆関数
 
-    .. math::
-        x =  \\frac{y-b}{a}
-
-    Parameters
-    ----------
-    y : float or array-like, shape = (sample_num,)
-        入力データ
-    a : float
-        傾き
-    b : float
-        切片
-
-    Returns
-    -------
-    x : float or array-like, shape = (sample_num,)
-        計算結果
-    """
     x = (y - b) / a
     return x
