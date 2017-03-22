@@ -195,7 +195,7 @@ class PatternCoding(object):
 
 
 class SelectiveDesensitization(PatternCoding):
-    """ SelectiveDesensitizationクラスは実数と選択的不感化されたパターンコードの対応関係の管理を行うクラスです.
+    """ SelectiveDesensitizationクラスは実数と選択的不感化されたパターンコードの対応関係を管理するクラスです.
 
     選択的不感化とは二つのパターンコード :math:`\mathbf{p}_{i}` , :math:`\mathbf{p}_{j}` を以下の式に従って変換を行う操作です.
 
@@ -205,7 +205,7 @@ class SelectiveDesensitization(PatternCoding):
 
         \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}
 
-    入力次元がN次元の場合, :math:`\\frac{N(N-1)}{2}` 個の選択的不感化されたパターンコードが生成されます.
+    入力次元が :math:`N` 次元の場合, :math:`N(N-1)` 個の選択的不感化されたパターンコードを出力します.
 
 
     Parameters
@@ -220,8 +220,8 @@ class SelectiveDesensitization(PatternCoding):
         入力データの次元数 N
     """
 
-    def __init__(self, binary_vector_dim, division_num, reversal_num, input_dim):
-        super().__init__(binary_vector_dim, division_num, reversal_num, input_dim)
+    def __init__(self, code_pattern_dim, input_division_num, reversal_num, input_dim):
+        super().__init__(code_pattern_dim, input_division_num, reversal_num, input_dim)
 
     @staticmethod
     def _pattern_to_sd_pattern(code_pattern1, code_pattern2):
@@ -229,9 +229,9 @@ class SelectiveDesensitization(PatternCoding):
 
         Parameters
         ----------
-        pattern1 : ndarray, shape = (code_pattern_dim,)
+        code_pattern1 : ndarray, shape = (code_pattern_dim,)
             subject pattern
-        pattern2 : ndarray, shape =  (code_pattern_dim,)
+        code_pattern2 : ndarray, shape =  (code_pattern_dim,)
             context pattern
 
         Returns
@@ -306,13 +306,16 @@ class SelectiveDesensitization(PatternCoding):
 
         Returns
         -------
-        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) * binary_vector_dim,)
+        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) * code_pattern_dim,)
         """
+        # 入力データが0次元(スカラー)の場合
+        if X.ndim == 0:
+            raise ValueError('input data is not allowed to be scalar.input data must be 1d or 2d array')
 
         # 入力データが1次元の場合
-        if X.ndim == 1:
-            code_pattern = self._real_to_sd_code(X, low, high)
-            return code_pattern
+        elif X.ndim == 1:
+            sd_code_pattern = self._real_to_sd_code(X, low, high)
+            return sd_code_pattern
 
         # 入力データが2次元の場合
         elif X.ndim == 2:
@@ -321,6 +324,7 @@ class SelectiveDesensitization(PatternCoding):
             for x in X:
                 code_pattern = self._real_to_sd_code(x, low, high)
                 pattern_list.append(code_pattern)
-            return np.array(pattern_list)
+            sd_code_pattern = np.array(pattern_list)
+            return sd_code_pattern
         else:
             raise ValueError('input data dimensions must be 1d or 2d')
