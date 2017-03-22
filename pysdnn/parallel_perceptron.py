@@ -35,8 +35,12 @@ class PP_A(BaseNetwork):
 class PP_P(BaseNetwork):
     """ Parallel Peceptron Pattern"""
 
-    def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
+    def __init__(self, code_pattern_dim=100, input_division_num=100, reversal_num=1, hidden_layer_num=300, eta=10 ** -3,
+                 verbose=False):
         super().__init__(hidden_layer_num, eta, verbose)
+        self.code_pattern_dim = code_pattern_dim
+        self.input_division_num = input_division_num
+        self.reversal_num = reversal_num
 
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
@@ -46,7 +50,7 @@ class PP_P(BaseNetwork):
     def fit(self, X, y):
         """Fit the PP_P model according to the given training data."""
         intercepted_X = add_interception(X)
-        self.pc = PatternCoding(code_pattern_dim=100, input_division_num=100, reversal_num=1,
+        self.pc = PatternCoding(self.code_pattern_dim, self.input_division_num, self.reversal_num,
                                 input_dim=intercepted_X.shape[1])
         code_X = self.pc.coding(intercepted_X, 0, 1)
         super().fit(code_X, y)
