@@ -10,7 +10,7 @@ for more information.
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_is_fitted
-from pysdnn.utils import add_columns, step
+from pysdnn import utils
 
 
 class PP(BaseEstimator):
@@ -41,14 +41,6 @@ class PP(BaseEstimator):
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
         self.is_pattern = is_pattern
-
-    def activate_function(self, x):
-        y = self.a * x + self.b
-        return y
-
-    def inverse_activate_function(self, y):
-        x = (y - self.b) / self.a
-        return x
 
     @staticmethod
     def _search_index(a, n_target, n_predict):
@@ -84,7 +76,7 @@ class PP(BaseEstimator):
     def fit(self, X, y):
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
-        intercepted_X = add_columns(X)
+        intercepted_X = utils.add_columns(X)
 
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
         self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features + 1])
@@ -93,9 +85,9 @@ class PP(BaseEstimator):
             for i in (range(n_samples)):
                 # 順伝播
                 a = np.dot(self.W, intercepted_X[i])
-                z = step(a)
+                z = utils.step(a)
                 n_predict = np.sum(z)
-                n_target = self.inverse_activate_function(y[i])
+                n_target = utils.inverse_scale(y[i], self.a, self.b)
 
                 # 修正するパーセプトロンを選択
                 index_list = self._search_index(a, n_target, n_predict)
@@ -110,14 +102,14 @@ class PP(BaseEstimator):
     def predict(self, X):
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
-        intercepted_X = add_columns(X)
+        intercepted_X = utils.add_columns(X)
 
         for intercepted_x in intercepted_X:
             a = np.dot(self.W, intercepted_x)
-            z = step(a)
+            z = utils.step(a)
             a2 = np.sum(z)
 
-            prediction = self.activate_function(a2)
+            prediction = utils.scale(a2, self.a, self.b)
             prediction_list.append(prediction)
         y = np.ravel(prediction_list)
         return y
