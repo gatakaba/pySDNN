@@ -3,6 +3,7 @@
 
 from pysdnn.base_network import BaseNetwork
 from pysdnn.coding import SelectiveDesensitization
+from pysdnn.utils import add_interception
 
 
 class SDNN(BaseNetwork):
@@ -16,13 +17,15 @@ class SDNN(BaseNetwork):
 
     def fit(self, X, y):
         """Fit the SDNN model according to the given training data."""
+
+        intercepted_X = add_interception(X)
         self.sd = SelectiveDesensitization(code_pattern_dim=100, input_division_num=100, reversal_num=1,
-                                           input_dim=X.shape[1])
-        sd_code_X = self.sd.coding(X, 0, 1)
+                                           input_dim=intercepted_X.shape[1])
+        sd_code_X = self.sd.coding(intercepted_X, 0, 1)
         super().fit(sd_code_X, y)
 
     def predict(self, X):
-
-        sd_code_X = self.sd.coding(X, 0, 1)
+        intercepted_X = add_interception(X)
+        sd_code_X = self.sd.coding(intercepted_X, 0, 1)
         y = super().predict(sd_code_X)
         return y

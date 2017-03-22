@@ -45,12 +45,15 @@ class PP_P(BaseNetwork):
 
     def fit(self, X, y):
         """Fit the PP_P model according to the given training data."""
-        self.pc = PatternCoding(code_pattern_dim=100, input_division_num=100, reversal_num=1, input_dim=X.shape[1])
-        code_X = self.pc.coding(X, 0, 1)
+        intercepted_X = add_interception(X)
+        self.pc = PatternCoding(code_pattern_dim=100, input_division_num=100, reversal_num=1,
+                                input_dim=intercepted_X.shape[1])
+        code_X = self.pc.coding(intercepted_X, 0, 1)
         super().fit(code_X, y)
 
     def predict(self, X):
         """Perform regression on samples in X."""
-        code_X = self.pc.coding(X, 0, 1)
+        intercepted_X = add_interception(X)
+        code_X = self.pc.coding(intercepted_X, 0, 1)
         y = super().predict(code_X)
         return y
