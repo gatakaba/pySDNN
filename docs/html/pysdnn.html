@@ -85,7 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.coding">pysdnn.coding module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.multi_layer_perceptron">pysdnn.multi_layer_perceptron module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pysdnn-parallel-perceptron-module">pysdnn.parallel_perceptron module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.parallel_perceptron">pysdnn.parallel_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.selective_desensitization_neural_network">pysdnn.selective_desensitization_neural_network module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pysdnn-simple-perceptron-module">pysdnn.simple_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.utils">pysdnn.utils module</a></li>
@@ -324,8 +324,75 @@ for more information.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="pysdnn-parallel-perceptron-module">
-<h2>pysdnn.parallel_perceptron module<a class="headerlink" href="#pysdnn-parallel-perceptron-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pysdnn.parallel_perceptron">
+<span id="pysdnn-parallel-perceptron-module"></span><h2>pysdnn.parallel_perceptron module<a class="headerlink" href="#module-pysdnn.parallel_perceptron" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2017 Yu Kabasawa</p>
+<p>This is licensed under an MIT license. See the readme.md file
+for more information.</p>
+<dl class="class">
+<dt id="pysdnn.parallel_perceptron.PP">
+<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">PP</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>is_pattern=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.</p>
+<p>PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,
+中間層から出力層の結合荷重を固定したものとみなすことができる.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>hidden_layer_num</strong> : int</p>
+<blockquote>
+<div><p>中間層の素子数</p>
+</div></blockquote>
+<p><strong>eta: float</strong></p>
+<blockquote>
+<div><p>学習係数</p>
+</div></blockquote>
+<p><strong>is_pattern</strong> : bool</p>
+<blockquote>
+<div><p>パターンコードに変換した値を入力に用いる</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool</p>
+<blockquote class="last">
+<div><p>詳細な出力を有効にする</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP.activate_function">
+<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.activate_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="pysdnn.parallel_perceptron.PP.hidden_function">
+<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.hidden_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP.inverse_activate_function">
+<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP.score">
+<code class="descname">score</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pysdnn.selective_desensitization_neural_network">
 <span id="pysdnn-selective-desensitization-neural-network-module"></span><h2>pysdnn.selective_desensitization_neural_network module<a class="headerlink" href="#module-pysdnn.selective_desensitization_neural_network" title="Permalink to this headline">¶</a></h2>
