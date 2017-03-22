@@ -136,7 +136,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span><span class="p">,</span> <span class="n">check_array</span>
 
 
 <div class="viewcode-block" id="add_columns"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.add_columns">[docs]</a><span class="k">def</span> <span class="nf">add_columns</span><span class="p">(</span><span class="n">input_array</span><span class="p">):</span>
@@ -173,116 +172,76 @@
     <span class="k">return</span> <span class="n">intercepted_array</span></div>
 
 
-<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 線形関数</span>
+<div class="viewcode-block" id="step"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.step">[docs]</a><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; ステップ関数</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        f(x) = \\sum_{i} x_{i}</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    X  : array-like, shape = (samples_num, input_dim)</span>
-<span class="sd">        入力データ</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    y : array-like, shape = (samples_num,)</span>
-<span class="sd">        計算結果</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="nonaka"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.nonaka">[docs]</a><span class="k">def</span> <span class="nf">nonaka</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 野中関数[1]_</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        f(x,y) =</span>
+<span class="sd">        f(x) =</span>
 <span class="sd">        \\begin{cases}</span>
-<span class="sd">            1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\\\</span>
-<span class="sd">            \\frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)</span>
-<span class="sd">        \\end{cases}</span>
-
-<span class="sd">    .. [1] 野中和明, 田中文英, and 森田昌彦. &quot;階層型ニューラルネットの 2 変数関数近似能力の比較.&quot; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    X  : array-like, shape = (samples_num, 2)</span>
-<span class="sd">        入力データ</span>
-
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    y : array-like, shape = (samples_num,)</span>
-<span class="sd">        計算結果</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">r</span> <span class="o">=</span> <span class="mf">0.2</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">t</span></div>
-
-
-<div class="viewcode-block" id="cylinder"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.cylinder">[docs]</a><span class="k">def</span> <span class="nf">cylinder</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 円筒関数</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        f(x,y) =</span>
-<span class="sd">        \\begin{cases}</span>
-<span class="sd">            1 ((x-0.5)^{2}+(y-0.5)^{2} &lt; 0.04) \\\\</span>
-<span class="sd">            0 (otherwise)</span>
+<span class="sd">            1 (x &gt; 0) \\\\</span>
+<span class="sd">            0.5 (x = 0) \\\\</span>
+<span class="sd">            0 (x &lt; 0)</span>
 <span class="sd">        \\end{cases}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    X  : array-like, shape = (samples_num, 2)</span>
+<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
 <span class="sd">        入力データ</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    y : array-like, shape = (samples_num,)</span>
+<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
 <span class="sd">        計算結果</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="mf">0.4</span> <span class="o">**</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="k">return</span> <span class="n">y</span></div>
 
 
-<div class="viewcode-block" id="gauss"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.gauss">[docs]</a><span class="k">def</span> <span class="nf">gauss</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; ガウス関数</span>
+<div class="viewcode-block" id="scale"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.scale">[docs]</a><span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 線形スケーリング関数</span>
 
-<span class="sd">    .. math::</span>
-<span class="sd">        f(x,y) = \\exp(-(x-0.5)^{2} -(y-0.5)^{2})</span>
+<span class="sd">        .. math::</span>
+<span class="sd">            f(x) =  a x + b</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float or array-like, shape = (sample_num,)</span>
+<span class="sd">            入力データ</span>
+<span class="sd">        a : float</span>
+<span class="sd">            傾き</span>
+<span class="sd">        b : float</span>
+<span class="sd">            切片</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y : float or array-like, shape = (sample_num,)</span>
+<span class="sd">            計算結果</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="inverse_scale"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.utils.inverse_scale">[docs]</a><span class="k">def</span> <span class="nf">inverse_scale</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 線形スケーリング逆関数</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            x =  \\frac{y-b}{a}</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    X  : array-like, shape = (samples_num, 2)</span>
+<span class="sd">    y : float or array-like, shape = (sample_num,)</span>
 <span class="sd">        入力データ</span>
+<span class="sd">    a : float</span>
+<span class="sd">        傾き</span>
+<span class="sd">    b : float</span>
+<span class="sd">        切片</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    y : array-like, shape = (samples_num,)</span>
+<span class="sd">    x : float or array-like, shape = (sample_num,)</span>
 <span class="sd">        計算結果</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
-
-
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>
+    <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>
 
            </div>

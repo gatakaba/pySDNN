@@ -127,19 +127,40 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pysdnn.parallel_perceptron</h1><div class="highlight"><pre>
-<span></span><span class="c1"># coding:utf-8</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">PP</span>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Copyright (C) 2017 Yu Kabasawa</span>
+
+<span class="sd">This is licensed under an MIT license. See the readme.md file</span>
+<span class="sd">for more information.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
-<span class="kn">from</span> <span class="nn">pysdnn.utilities</span> <span class="k">import</span> <span class="n">add_columns</span>
+<span class="kn">from</span> <span class="nn">pysdnn.utils</span> <span class="k">import</span> <span class="n">add_columns</span><span class="p">,</span> <span class="n">step</span>
 
 
 <div class="viewcode-block" id="PP"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP">[docs]</a><span class="k">class</span> <span class="nc">PP</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.</span>
+
+<span class="sd">    PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,</span>
+<span class="sd">    中間層から出力層の結合荷重を固定したものとみなすことができる.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hidden_layer_num : int</span>
+<span class="sd">        中間層の素子数</span>
+<span class="sd">    eta: float</span>
+<span class="sd">        学習係数</span>
+<span class="sd">    is_pattern : bool</span>
+<span class="sd">        パターンコードに変換した値を入力に用いる</span>
+<span class="sd">    verbose : bool</span>
+<span class="sd">        詳細な出力を有効にする</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">is_pattern</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
@@ -148,10 +169,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="PP.hidden_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.hidden_function">[docs]</a>    <span class="k">def</span> <span class="nf">hidden_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_pattern</span> <span class="o">=</span> <span class="n">is_pattern</span>
 
 <div class="viewcode-block" id="PP.activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
@@ -161,7 +179,8 @@
         <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
-    <span class="k">def</span> <span class="nf">_search_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">):</span>
         <span class="c1"># 修正するパーセプトロンを選ぶ</span>
         <span class="n">error_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)))</span>
 
@@ -201,9 +220,9 @@
 
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)):</span>
-                <span class="c1"># feedforward</span>
+                <span class="c1"># 順伝播</span>
                 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">intercepted_X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
                 <span class="n">n_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
                 <span class="n">n_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_activate_function</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
@@ -224,13 +243,16 @@
 
         <span class="k">for</span> <span class="n">intercepted_x</span> <span class="ow">in</span> <span class="n">intercepted_X</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">intercepted_x</span><span class="p">)</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
             <span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
             <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
             <span class="n">prediction_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">prediction_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">y</span></div></div>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="PP.score"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
 
 
 <span class="sd">&#39;&#39;&#39;</span>
