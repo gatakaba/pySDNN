@@ -139,9 +139,9 @@
 
 
 <div class="viewcode-block" id="PatternCoding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding">[docs]</a><span class="k">class</span> <span class="nc">PatternCoding</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とコードパターンの対応関係の管理を行うクラスです.</span>
+    <span class="sd">&quot;&quot;&quot; PatternCodingクラスは実数とパターンコードの対応関係の管理を行うクラスです.</span>
 
-<span class="sd">    コードパターンとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルを指します.</span>
+<span class="sd">    パターンコードとは :math:`\{-1,1\}` を要素とする :math:`M` 次元ベクトルです.</span>
 
 <span class="sd">    PatternCodingクラスでは :math:`N` 次元の実数ベクトルを一括して扱い,</span>
 <span class="sd">    コーディングの出力結果は :math:`N \\ast M` 次元ベクトルです.</span>
@@ -149,7 +149,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    code_pattern_dim : int</span>
-<span class="sd">        コードパターンベクトルの次元数 n</span>
+<span class="sd">        パターンコードベクトルの次元数 n</span>
 <span class="sd">    input_division_num : int</span>
 <span class="sd">        実数の分割数 q</span>
 <span class="sd">    reversal_num : int</span>
@@ -164,15 +164,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span> <span class="o">=</span> <span class="n">reversal_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span> <span class="o">=</span> <span class="n">input_dim</span>
 
-        <span class="c1"># コードパターン対応表を作成</span>
+        <span class="c1"># パターンコード対応表を作成</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_code_pattern_table</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_create_code_pattern_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; 実数とコードパターンの対応表を作成する</span>
+        <span class="sd">&quot;&quot;&quot; 実数とパターンコードの対応表を作成する</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        code_pattern_table : ndarray, shape = (input_dim, division_num, code_pattern_dim)</span>
-<span class="sd">            コードパターン対応表</span>
+<span class="sd">            パターンコード対応表</span>
 <span class="sd">            code_pattern_table[i,j]はi次元目のj番目のパターンを表す</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -183,9 +183,9 @@
         <span class="k">return</span> <span class="n">code_pattern_table</span>
 
     <span class="k">def</span> <span class="nf">_create_code_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; コードパターンを作成する</span>
+        <span class="sd">&quot;&quot;&quot; パターンコードを作成する</span>
 
-<span class="sd">        コードパターンは以下の条件を満たす</span>
+<span class="sd">        パターンコードは以下の条件を満たす</span>
 <span class="sd">        - 入力次元ごとに異なるパターンを持つ</span>
 <span class="sd">        - 重複が無い</span>
 <span class="sd">        - -1と1の数の数が等しい</span>
@@ -193,7 +193,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        code_pattern : ndarray, shape = (division_num,code_pattern_dim)</span>
-<span class="sd">            コードパターン</span>
+<span class="sd">            パターンコード</span>
 <span class="sd">            code_pattern[i]はi番目のパターンを表す</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -224,7 +224,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">code_pattern</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_real_to_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; 実数xをコードパターンに変換する</span>
+        <span class="sd">&quot;&quot;&quot; 実数xをパターンコードに変換する</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -250,19 +250,21 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">high_array</span> <span class="o">=</span> <span class="n">high</span>
 
-        <span class="n">code_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">code_pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="n">scaled_element</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">high_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
             <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scaled_element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
 
             <span class="c1"># 正規化</span>
-            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
 
-            <span class="n">code_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+            <span class="n">code_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
 
-        <span class="n">code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">code_list</span><span class="p">)</span>
+        <span class="n">code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">code_pattern_list</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">code_pattern</span>
 
 <div class="viewcode-block" id="PatternCoding.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.PatternCoding.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -270,13 +272,13 @@
 
 <span class="sd">        入力値の値域を引数low,highによって設定することができます.</span>
 
-<span class="sd">        入力値がlowよりも小さい場合,入力値がlowとした場合のコードパターンを出力します.</span>
+<span class="sd">        入力値がlowよりも小さい場合,入力値がlowとした場合のパターンコードを出力します.</span>
 
-<span class="sd">        入力値がhighよりも大きい場合,入力値がhighとした場合のコードパターンを出力します.</span>
+<span class="sd">        入力値がhighよりも大きい場合,入力値がhighとした場合のパターンコードを出力します.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
+<span class="sd">        X : float or ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
 <span class="sd">            入力データ</span>
 <span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
 <span class="sd">            入力値の下限</span>
@@ -286,14 +288,25 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        code_pattern : ndarray, shape =(code_pattern_dim * input_dim,) or (sample_num, input_dim * code_pattern_dim)</span>
-<span class="sd">            コードパターン</span>
+<span class="sd">            パターンコード</span>
 
-<span class="sd">            返り値は各入力次元に対応するコードパターンが結合された1次元ndarrayです.</span>
+<span class="sd">            返り値は各入力次元に対応するパターンコードが結合された1次元ndarrayです.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># 入力データが1次元の場合</span>
-        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># 入力データが0次元(スカラー)の場合</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">scaled_element</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">high</span> <span class="o">-</span> <span class="n">low</span><span class="p">)</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scaled_element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
+            <span class="c1"># 正規化</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_code</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">code_pattern</span>
 
@@ -311,52 +324,135 @@
 
 
 <div class="viewcode-block" id="SelectiveDesensitization"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization">[docs]</a><span class="k">class</span> <span class="nc">SelectiveDesensitization</span><span class="p">(</span><span class="n">PatternCoding</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    パターンを選択的不感化する</span>
+    <span class="sd">&quot;&quot;&quot; SelectiveDesensitizationクラスは実数と選択的不感化されたパターンコードの対応関係を管理するクラスです.</span>
+
+<span class="sd">    選択的不感化とは二つのパターンコード :math:`\mathbf{p}_{i}` , :math:`\mathbf{p}_{j}` を以下の式に従って変換を行う操作です.</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        \phi : x \mapsto \mathbf{p}</span>
+<span class="sd">        \mathbf{p}_{i,j} = \\frac{\mathbf{p}_{i} + 1}{2} \mathbf{p}_{j}</span>
 
+<span class="sd">        \mathbf{p}_{j,i} = \\frac{\mathbf{p}_{j} + 1}{2} \mathbf{p}_{i}</span>
+
+<span class="sd">    入力次元がN次元の場合, :math:`N(N-1)` 個の選択的不感化されたパターンコードが生成されます.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code_pattern_dim : int</span>
+<span class="sd">        パターンコードベクトルの次元数 n</span>
+<span class="sd">    input_division_num : int</span>
+<span class="sd">        実数の分割数 q</span>
+<span class="sd">    reversal_num : int</span>
+<span class="sd">        反転数 r</span>
+<span class="sd">    input_dim : int</span>
+<span class="sd">        入力データの次元数 N</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">binary_vector_dim</span><span class="p">,</span> <span class="n">division_num</span><span class="p">,</span> <span class="n">reversal_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SelectiveDesensitization.pattern_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.pattern_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">pattern_to_sd_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern1</span><span class="p">,</span> <span class="n">pattern2</span><span class="p">):</span>
-        <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">pattern1</span><span class="p">)</span> <span class="o">*</span> <span class="n">pattern2</span> <span class="o">/</span> <span class="mf">2.0</span>
-        <span class="k">return</span> <span class="n">sd_pattern</span></div>
-
-<div class="viewcode-block" id="SelectiveDesensitization.num_to_sd_pattern"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.num_to_sd_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">num_to_sd_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        選択的不感化したパターンを返す</span>
-
-
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_pattern_to_sd_pattern</span><span class="p">(</span><span class="n">code_pattern1</span><span class="p">,</span> <span class="n">code_pattern2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; pattern2を用いてpattern1の不感化を行う</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : array, shape = (n_features,)</span>
+<span class="sd">        pattern1 : ndarray, shape = (code_pattern_dim,)</span>
+<span class="sd">            subject pattern</span>
+<span class="sd">        pattern2 : ndarray, shape =  (code_pattern_dim,)</span>
+<span class="sd">            context pattern</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sd_pattern : ndarray, shape = (n_features * (n_features - 1) / 2 * binary_vector_dim,)</span>
+<span class="sd">        sp_pattern : ndarray, shape = (code_pattern_dim,)</span>
+<span class="sd">            pattern1 selective desensitizated by pattern2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sd_pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">division_num</span><span class="p">))</span>
-                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
-            <span class="n">sd_pattern</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">pattern2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">sd_pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern_to_sd_pattern</span><span class="p">(</span><span class="n">pattern1</span><span class="p">,</span> <span class="n">pattern2</span><span class="p">))</span>
+        <span class="n">sd_code_pattern</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">code_pattern1</span><span class="p">)</span> <span class="o">*</span> <span class="n">code_pattern2</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="k">return</span> <span class="n">sd_code_pattern</span>
 
-            <span class="n">sd_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">sd_pattern</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sd_pattern_list</span><span class="p">)</span></div></div>
+    <span class="k">def</span> <span class="nf">_real_to_sd_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 実数xをパターンコードに変換する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ndarray, shape = (input_dim,)</span>
+<span class="sd">            入力値</span>
+<span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の下限</span>
+<span class="sd">        high : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の上限</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sd_code_pattern : ndarray, shape = (input_dim * (input_dim - 1) * code_pattern_dim,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">low_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">)</span> <span class="o">*</span> <span class="n">low</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low_array</span> <span class="o">=</span> <span class="n">low</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">high_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_dim</span><span class="p">)</span> <span class="o">*</span> <span class="n">high</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">high_array</span> <span class="o">=</span> <span class="n">high</span>
+        <span class="c1"># 実数からコードパターンを作成</span>
+        <span class="n">code_pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">scaled_element</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">high_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scaled_element</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">))</span>
+            <span class="c1"># 正規化</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">code_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_table</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">index</span><span class="p">])</span>
+
+        <span class="c1"># コードパターンを不感化</span>
+        <span class="n">sd_code_pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pattern1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code_pattern_list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">pattern2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">code_pattern_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sd_code_pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pattern_to_sd_pattern</span><span class="p">(</span><span class="n">pattern1</span><span class="p">,</span> <span class="n">pattern2</span><span class="p">))</span>
+
+        <span class="n">sd_code_pattern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">sd_code_pattern_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sd_code_pattern</span>
+
+<div class="viewcode-block" id="SelectiveDesensitization.coding"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.coding.SelectiveDesensitization.coding">[docs]</a>    <span class="k">def</span> <span class="nf">coding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; 選択的不感化されたパターンコードを出力する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : ndarray, shape = (input_dim,) or (sample_num,input_dim)</span>
+<span class="sd">            入力データ</span>
+<span class="sd">        low : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の下限</span>
+<span class="sd">        high : int or float or ndarray, shape =(input_dim,), optional</span>
+<span class="sd">            入力値の上限</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sd_code_pattern : ndarray, shape = (n_features * (n_features - 1) * binary_vector_dim,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># 入力データが1次元の場合</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_sd_code</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">code_pattern</span>
+
+        <span class="c1"># 入力データが2次元の場合</span>
+        <span class="k">elif</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">pattern_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
+                <span class="n">code_pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_to_sd_code</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+                <span class="n">pattern_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">code_pattern</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pattern_list</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input data dimensions must be 1d or 2d&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
