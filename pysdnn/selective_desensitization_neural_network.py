@@ -15,12 +15,14 @@ class SDNN(BaseNetwork):
         self.sd = None
 
     def fit(self, X, y):
+        """Fit the SDNN model according to the given training data."""
         self.sd = SelectiveDesensitization(code_pattern_dim=100, input_division_num=100, reversal_num=1,
                                            input_dim=X.shape[1])
         sd_code_X = self.sd.coding(X, 0, 1)
         super().fit(sd_code_X, y)
 
     def predict(self, X):
+
         sd_code_X = self.sd.coding(X, 0, 1)
         y = super().predict(sd_code_X)
         return y

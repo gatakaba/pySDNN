@@ -141,6 +141,7 @@ class BaseNetwork(BaseEstimator):
         return index_list
 
     def fit(self, X, y):
+        """Fit the BaseNetwork model according to the given training data."""
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
 
@@ -165,6 +166,7 @@ class BaseNetwork(BaseEstimator):
         return self
 
     def predict(self, X):
+        """Perform regression on samples in X."""
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
 
