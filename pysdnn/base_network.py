@@ -10,23 +10,23 @@ from sklearn.utils.validation import check_X_y, check_is_fitted
 def _step(x):
     """ ステップ関数
 
-.. math::
-    f(x) =
-    \\begin{cases}
-        1 (x > 0) \\\\
-        0.5 (x = 0) \\\\
-        0 (x < 0)
-    \\end{cases}
+    .. math::
+        f(x) =
+        \\begin{cases}
+            1 (x > 0) \\\\
+            0.5 (x = 0) \\\\
+            0 (x < 0)
+        \\end{cases}
 
-    Parameters
-    ----------
-    x : float or array-like, shape = (sample_num,)
-        入力データ
+        Parameters
+        ----------
+        x : float or array-like, shape = (sample_num,)
+            入力データ
 
-    Returns
-    -------
-    y : float or array-like, shape = (sample_num,)
-        計算結果
+        Returns
+        -------
+        y : float or array-like, shape = (sample_num,)
+            計算結果
     """
     y = (np.sign(x) + 1) / 2.0
     return y
@@ -100,12 +100,13 @@ class BaseNetwork(BaseEstimator):
     """
 
     def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
+        self.hidden_layer_num = hidden_layer_num
+        self.eta = eta
+        self.verbose = verbose
+
         self.W = None
         self.n_samples = None
         self.n_features = None
-        self.eta = eta
-        self.hidden_layer_num = hidden_layer_num
-        self.verbose = verbose
         self.a = 1.4 / self.hidden_layer_num
         self.b = -0.2
 

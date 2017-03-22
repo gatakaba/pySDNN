@@ -18,11 +18,11 @@ class TestSDNN(unittest.TestCase):
         self.test_X = np.random.uniform(0, 1, size=[n_test_samples, 2])
         self.test_y = np.random.normal(size=n_train_samples)
 
-        self.sdnn = SDNN()
-
     def test_fit(self):
+        self.sdnn = SDNN()
         self.sdnn.fit(self.train_X, self.train_y)
 
     def test_predict(self):
+        self.sdnn = SDNN()
         self.sdnn.fit(self.train_X, self.train_y)
         self.sdnn.predict(self.test_X)
