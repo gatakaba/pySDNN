@@ -6,14 +6,12 @@ requirement_list = [r.strip() for r in open('requirements.txt', 'r').readlines()
 
 def main():
     setup(
-        name='pySDNN',
+        name='pysdnn',
         install_requires=requirement_list,
         version='0.1',
-        package_dir={'pySDNN': 'pysdnn'},
         description='Selective Desensitization Neural Network implemented in python',
         author='Yu Kabasawa',
-        #packages=find_packages(),
-        packages=['pySDNN'],
+        packages=find_packages(),
         license='MIT',
         classifiers=[
             'Operating System :: POSIX',
