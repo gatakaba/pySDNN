@@ -8,7 +8,7 @@ def main():
     setup(
         name='pysdnn',
         install_requires=requirement_list,
-        version='0.1',
+        version='1.0',
         description='Selective Desensitization Neural Network implemented in python',
         author='Yu Kabasawa',
         packages=find_packages(),
