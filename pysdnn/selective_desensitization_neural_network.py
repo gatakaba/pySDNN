@@ -19,15 +19,13 @@ class SDNN(BaseNetwork):
         反転数 r
     hidden_layer_num : int, optional (default = 280)
         中間素子数
-    eta : float, optional (default = 0.001)
-        学習率
     verbose : bool, optional (default = False)
         詳細な出力を有効化
     """
 
-    def __init__(self, code_pattern_dim=100, input_division_num=100, reversal_num=1, hidden_layer_num=200, eta=10 ** -3,
+    def __init__(self, code_pattern_dim=100, input_division_num=100, reversal_num=1, hidden_layer_num=200,
                  verbose=False):
-        super().__init__(hidden_layer_num, eta, verbose)
+        super().__init__(hidden_layer_num, verbose)
 
         self.code_pattern_dim = code_pattern_dim
         self.input_division_num = input_division_num
@@ -36,7 +34,7 @@ class SDNN(BaseNetwork):
         self.b = -0.2
         self.sd = None
 
-    def fit(self, X, y):
+    def fit(self, X, y, learning_num=100, eta=10 ** -3):
         """Fit the SDNN model according to the given training data.
 
         Parameters
@@ -45,6 +43,10 @@ class SDNN(BaseNetwork):
             Training vectors.
         y : array-like, shape = (sample_num,)
             Target values.
+        learning_num : int, optional (default = 100)
+            学習回数
+        eta : float, optional (default = 0.001)
+            学習率
 
         Returns
         -------
@@ -56,7 +58,7 @@ class SDNN(BaseNetwork):
         self.sd = SelectiveDesensitization(self.code_pattern_dim, self.input_division_num, self.reversal_num,
                                            input_dim=input_dim)
         sd_code_X = self.sd.coding(intercepted_X, 0, 1)
-        super().fit(sd_code_X, y)
+        super().fit(sd_code_X, y, learning_num, eta)
         return self
 
     def predict(self, X):

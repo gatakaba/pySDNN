@@ -93,17 +93,15 @@ class BaseNetwork(BaseEstimator):
     ----------
     hidden_layer_num : int
         中間層の素子数
-    eta: float
-        学習係数
     verbose : bool
         詳細な出力を有効にする
     """
 
-    def __init__(self, hidden_layer_num=300, eta=10 ** -3, verbose=False):
+    def __init__(self, hidden_layer_num=300, verbose=False):
         self.hidden_layer_num = hidden_layer_num
-        self.eta = eta
         self.verbose = verbose
 
+        self.eta = None
         self.W = None
         self.n_samples = None
         self.n_features = None
@@ -141,15 +139,32 @@ class BaseNetwork(BaseEstimator):
         index_list = np.sort(index_list)
         return index_list
 
-    def fit(self, X, y):
-        """Fit the BaseNetwork model according to the given training data."""
+    def fit(self, X, y, learning_num, eta):
+        """Fit the BaseNetwork model according to the given training data.
+
+        Parameters
+        ----------
+        X : array-like, shape = (sample_num, input_dim)
+            Training vectors.
+        y : array-like, shape = (sample_num,)
+            Target values.
+        learning_num : int
+            学習回数
+        eta : float
+            学習率
+
+        Returns
+        -------
+        self : object
+            Returns self.
+        """
         X, y = check_X_y(X, y, multi_output=False)
         n_samples, n_features = X.shape
-
+        self.eta = eta
         self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features])
         self.X_train_, self.y_train_ = np.copy(X), np.copy(y)
 
-        for j in range(100):
+        for j in range(learning_num):
             for i in (range(n_samples)):
                 # 順伝播
                 a = np.dot(self.W, X[i])
@@ -167,7 +182,16 @@ class BaseNetwork(BaseEstimator):
         return self
 
     def predict(self, X):
-        """Perform regression on samples in X."""
+        """Perform regression on samples in X.
+
+        Parameters
+        ----------
+        X : array-like, shape = (sample_num,input_dim)
+
+        Returns
+        -------
+        y_pred : array-like, shape = (sample_num, )
+        """
         check_is_fitted(self, ["X_train_", "y_train_"])
         prediction_list = []
 
