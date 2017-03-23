@@ -12,7 +12,7 @@ from pysdnn.utils import add_interception
 
 
 class PP_A(BaseNetwork):
-    """Parallel Peceptron Analogue
+    """アナログパラレルパーセプトロンクラス(PP-A : Parallel Peceptron Analogue)
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ class PP_A(BaseNetwork):
 
 
 class PP_P(BaseNetwork):
-    """ Parallel Peceptron Pattern
+    """ パターンパラレルパーセプトロンクラス(PP-P : Parallel Peceptron Pattern)
 
     Parameters
     ----------

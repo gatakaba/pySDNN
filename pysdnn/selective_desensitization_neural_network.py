@@ -7,7 +7,7 @@ from pysdnn.utils import add_interception
 
 
 class SDNN(BaseNetwork):
-    """Selective Desensitization Neural Network
+    """選択的不感化ニューラルネットワーククラス(SDNN : Selective Desensitization Neural Network)
 
     Parameters
     ----------
