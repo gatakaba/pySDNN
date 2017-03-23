@@ -14,7 +14,7 @@ RUN pip install sklearn
 RUN pip install seaborn
 RUN pip install ipywidgets
 
-
+RUN pip install git+https://github.com/gatakaba/pySDNN.git@develop
 WORKDIR /root
-RUN pip install git+https://github.com/gatakaba/pySDNN.git@base_network
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
+

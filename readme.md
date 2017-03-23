@@ -39,9 +39,9 @@ pySDNN
 [docker](https://docs.docker.com/engine/installation/)をインストール
 
 
-### 2. Docker イメージのダウンロード
+### 2. Dockerイメージをビルド
 
-`$ docker pull gatakaba/pySDNN`
+`$ docker build -t pysdnn:latest ./`
 
 
 
