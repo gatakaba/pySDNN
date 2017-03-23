@@ -1,10 +1,10 @@
 import numpy as np
 import unittest
 
-from pysdnn.parallel_perceptron import PP, PP_P
+from pysdnn.parallel_perceptron import PP_A, PP_P
 
 
-class TestPP(unittest.TestCase):
+class TestPP_A(unittest.TestCase):
     def setUp(self):
         # make sample data
         n_train_samples = 20
@@ -19,11 +19,11 @@ class TestPP(unittest.TestCase):
         pass
 
     def test_fit(self):
-        self.pp = PP()
+        self.pp = PP_A()
         self.pp.fit(self.train_X, self.train_y)
 
     def test_predict(self):
-        self.pp = PP()
+        self.pp = PP_A()
         self.pp.fit(self.train_X, self.train_y)
         self.pp.predict(self.test_X)
 

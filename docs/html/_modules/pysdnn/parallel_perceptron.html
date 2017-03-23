@@ -129,236 +129,141 @@
   <h1>Source code for pysdnn.parallel_perceptron</h1><div class="highlight"><pre>
 <span></span><span class="ch">#! /usr/bin/env python</span>
 <span class="c1"># -*- coding:utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot; Copyright (C) 2017 Yu Kabasawa</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.</span>
 
-<span class="sd">This is licensed under an MIT license. See the readme.md file</span>
-<span class="sd">for more information.</span>
-
+<span class="sd">PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,中間層から出力層の結合荷重を固定したものとみなすことができる.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span>
-<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_X_y</span><span class="p">,</span> <span class="n">check_is_fitted</span>
-<span class="kn">from</span> <span class="nn">pysdnn.utils</span> <span class="k">import</span> <span class="n">add_columns</span><span class="p">,</span> <span class="n">step</span>
+<span class="kn">from</span> <span class="nn">pysdnn.base_network</span> <span class="k">import</span> <span class="n">BaseNetwork</span>
+<span class="kn">from</span> <span class="nn">pysdnn.coding</span> <span class="k">import</span> <span class="n">PatternCoding</span>
+<span class="kn">from</span> <span class="nn">pysdnn.utils</span> <span class="k">import</span> <span class="n">add_interception</span>
 
 
-<div class="viewcode-block" id="PP"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP">[docs]</a><span class="k">class</span> <span class="nc">PP</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.</span>
-
-<span class="sd">    PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,</span>
-<span class="sd">    中間層から出力層の結合荷重を固定したものとみなすことができる.</span>
+<div class="viewcode-block" id="PP_A"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_A">[docs]</a><span class="k">class</span> <span class="nc">PP_A</span><span class="p">(</span><span class="n">BaseNetwork</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;アナログパラレルパーセプトロンクラス(PP-A : Parallel Peceptron Analogue)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    hidden_layer_num : int</span>
-<span class="sd">        中間層の素子数</span>
-<span class="sd">    eta: float</span>
-<span class="sd">        学習係数</span>
-<span class="sd">    is_pattern : bool</span>
-<span class="sd">        パターンコードに変換した値を入力に用いる</span>
-<span class="sd">    verbose : bool</span>
-<span class="sd">        詳細な出力を有効にする</span>
+<span class="sd">    hidden_layer_num : int, optional (default = 280)</span>
+<span class="sd">        中間素子数</span>
+<span class="sd">    verbose : bool, optional (default = False)</span>
+<span class="sd">        詳細な出力を有効化</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">is_pattern</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span> <span class="o">=</span> <span class="n">hidden_layer_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_pattern</span> <span class="o">=</span> <span class="n">is_pattern</span>
 
-<div class="viewcode-block" id="PP.activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
-        <span class="k">return</span> <span class="n">y</span></div>
+<div class="viewcode-block" id="PP_A.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_A.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">learning_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the SDNN model according to the given training data.</span>
 
-<div class="viewcode-block" id="PP.inverse_activate_function"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.inverse_activate_function">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_activate_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>
-        <span class="k">return</span> <span class="n">x</span></div>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num, input_dim)</span>
+<span class="sd">            Training vectors.</span>
+<span class="sd">        y : array-like, shape = (sample_num,)</span>
+<span class="sd">            Target values.</span>
+<span class="sd">        learning_num : int, optional (default = 100)</span>
+<span class="sd">            学習回数</span>
+<span class="sd">        eta : float, optional (default = 0.001)</span>
+<span class="sd">            学習率</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">):</span>
-        <span class="c1"># 修正するパーセプトロンを選ぶ</span>
-        <span class="n">error_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)))</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">            Returns self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">learning_num</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span></div>
 
-        <span class="k">if</span> <span class="n">error_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">elif</span> <span class="n">n_target</span> <span class="o">&gt;</span> <span class="n">n_predict</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                n_target &gt; n_predictの場合、(n_target-n_predict)個のパーセプトロンを1が出るように修正</span>
-<span class="sd">                修正するパーセプトロンは0以下のパーセプトロンの内最も内部電位が高いパーセプトロン</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">negative_perceptron_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">a</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_perceptron_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">error_num</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">negative_perceptron_values</span><span class="p">[:</span><span class="n">error_num</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">negative_perceptron_values</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">positive_perceptron_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_perceptron_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">error_num</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">positive_perceptron_values</span><span class="p">[:</span><span class="n">error_num</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fix_perceptron_values</span> <span class="o">=</span> <span class="n">positive_perceptron_values</span>
+<div class="viewcode-block" id="PP_A.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_A.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform regression on samples in X.</span>
 
-        <span class="n">index_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">fix_perceptron_value</span> <span class="ow">in</span> <span class="n">fix_perceptron_values</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">fix_perceptron_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">index_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">index_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">index_list</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num,input_dim)</span>
 
-<div class="viewcode-block" id="PP.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)):</span>
-                <span class="c1"># 順伝播</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">intercepted_X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">n_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-                <span class="n">n_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_activate_function</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-                <span class="c1"># 修正するパーセプトロンを選択</span>
-                <span class="n">index_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_index</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n_target</span><span class="p">,</span> <span class="n">n_predict</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">index_list</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">n_target</span> <span class="o">-</span> <span class="n">n_predict</span><span class="p">)</span> <span class="o">*</span> <span class="n">intercepted_X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train_</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
-<div class="viewcode-block" id="PP.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_train_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_train_&quot;</span><span class="p">])</span>
-        <span class="n">prediction_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_columns</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">intercepted_x</span> <span class="ow">in</span> <span class="n">intercepted_X</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="n">intercepted_x</span><span class="p">)</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-            <span class="n">a2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
-            <span class="n">prediction_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">prediction_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">y</span></div>
-
-<div class="viewcode-block" id="PP.score"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_pred : array-like, shape = (sample_num, )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span></div></div>
 
 
-<span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="PP_P"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_P">[docs]</a><span class="k">class</span> <span class="nc">PP_P</span><span class="p">(</span><span class="n">BaseNetwork</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; パターンパラレルパーセプトロンクラス(PP-P : Parallel Peceptron Pattern)</span>
 
-<span class="sd">class ParallelPerceptronPattern(BaseEstimator):</span>
-<span class="sd">    def __init__(self, hidden_layer_num=1000, eta=10 ** -3, verbose=False):</span>
-<span class="sd">        self.W = None</span>
-<span class="sd">        self.n_samples = None</span>
-<span class="sd">        self.n_features = None</span>
-<span class="sd">        self.eta = eta</span>
-<span class="sd">        self.hidden_layer_num = hidden_layer_num</span>
-<span class="sd">        self.verbose = verbose</span>
-<span class="sd">        self.a = 1.4 / self.hidden_layer_num</span>
-<span class="sd">        self.b = -0.2</span>
-<span class="sd">        self.pattern_manager = PatternCoding(binary_vector_dim=100, division_num=100, reversal_num=1)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    code_pattern_dim : int, optional (default = 100)</span>
+<span class="sd">        パターンコードベクトルの次元数 n</span>
+<span class="sd">    input_division_num : int, optional (default = 100)</span>
+<span class="sd">        実数の分割数 q</span>
+<span class="sd">    reversal_num : int, optinal (default = 1)</span>
+<span class="sd">        反転数 r</span>
+<span class="sd">    hidden_layer_num : int, optional (default = 280)</span>
+<span class="sd">        中間素子数</span>
+<span class="sd">    verbose : bool, optional (default = False)</span>
+<span class="sd">        詳細な出力を有効化</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="sd">    def hidden_function(self, x):</span>
-<span class="sd">        return (np.sign(x) + 1) / 2.0</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_pattern_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">input_division_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reversal_num</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_layer_num</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">hidden_layer_num</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span> <span class="o">=</span> <span class="n">code_pattern_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span> <span class="o">=</span> <span class="n">input_division_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span> <span class="o">=</span> <span class="n">reversal_num</span>
 
-<span class="sd">    def activate_function(self, x):</span>
-<span class="sd">        y = self.a * x + self.b</span>
-<span class="sd">        return y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layer_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.2</span>
 
-<span class="sd">    def inverse_activate_function(self, y):</span>
-<span class="sd">        x = (y - self.b) / self.a</span>
-<span class="sd">        return x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pc</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="sd">    def _search_index(self, a, n_target, n_predict):</span>
-<span class="sd">        # 修正するパーセプトロンを選ぶ</span>
-<span class="sd">        error_num = int(round(np.abs(n_target - n_predict)))</span>
-<span class="sd">        if error_num == 0:</span>
-<span class="sd">            return []</span>
-<span class="sd">        elif n_target &gt; n_predict:</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-<span class="sd">                n_target &gt; n_predictの場合、(n_target-n_predict)個のパーセプトロンを1が出るように修正</span>
-<span class="sd">                修正するパーセプトロンは0以下のパーセプトロンの内最も内部電位が高いパーセプトロン</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-<span class="sd">            negative_perceptron_values = np.sort(a[a &lt; 0])[::-1]</span>
-<span class="sd">            if len(negative_perceptron_values) &gt; error_num:</span>
-<span class="sd">                fix_perceptron_values = negative_perceptron_values[:error_num]</span>
-<span class="sd">            else:</span>
-<span class="sd">                fix_perceptron_values = negative_perceptron_values</span>
-<span class="sd">        else:</span>
-<span class="sd">            positive_perceptron_values = np.sort(a[a &gt; 0])</span>
-<span class="sd">            if len(positive_perceptron_values) &gt; error_num:</span>
-<span class="sd">                fix_perceptron_values = positive_perceptron_values[:error_num]</span>
-<span class="sd">            else:</span>
-<span class="sd">                fix_perceptron_values = positive_perceptron_values</span>
+<div class="viewcode-block" id="PP_P.fit"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_P.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">learning_num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the SDNN model according to the given training data.</span>
 
-<span class="sd">        index_list = []</span>
-<span class="sd">        for fix_perceptron_value in fix_perceptron_values:</span>
-<span class="sd">            index = np.where(a == fix_perceptron_value)[0][0]</span>
-<span class="sd">            index_list.append(index)</span>
-<span class="sd">        index_list = np.sort(index_list)</span>
-<span class="sd">        return index_list</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num, input_dim)</span>
+<span class="sd">            Training vectors.</span>
+<span class="sd">        y : array-like, shape = (sample_num,)</span>
+<span class="sd">            Target values.</span>
+<span class="sd">        learning_num : int, optional (default = 100)</span>
+<span class="sd">            学習回数</span>
+<span class="sd">        eta : float, optional (default = 0.001)</span>
+<span class="sd">            学習率</span>
 
-<span class="sd">    def fit(self, X, y):</span>
-<span class="sd">        X, y = check_X_y(X, y, multi_output=False)</span>
-<span class="sd">        self.X_train_, self.y_train_ = np.copy(X), np.copy(y)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : object</span>
+<span class="sd">            Returns self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pc</span> <span class="o">=</span> <span class="n">PatternCoding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_pattern_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_division_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reversal_num</span><span class="p">,</span>
+                                <span class="n">input_dim</span><span class="o">=</span><span class="n">intercepted_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pc</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">code_X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">learning_num</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span></div>
 
-<span class="sd">        intercepted_X = BaseEstimator.add_columns(X)</span>
-<span class="sd">        self.pattern_manager.make_binary_vector_tables(intercepted_X.shape[1])</span>
-<span class="sd">        patterned_X = self.pattern_manager.num_to_pattern(intercepted_X)</span>
+<div class="viewcode-block" id="PP_P.predict"><a class="viewcode-back" href="../../pysdnn.html#pysdnn.parallel_perceptron.PP_P.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Perform regression on samples in X.</span>
 
-<span class="sd">        n_samples, n_features = patterned_X.shape</span>
-<span class="sd">        self.W = np.random.normal(0, 1, size=[self.hidden_layer_num, n_features])</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like, shape = (sample_num,input_dim)</span>
 
-<span class="sd">        for j in range(100):</span>
-<span class="sd">            for i in (range(n_samples)):</span>
-<span class="sd">                # feedforward</span>
-<span class="sd">                a = np.dot(self.W, patterned_X[i])</span>
-<span class="sd">                z = self.hidden_function(a)</span>
-<span class="sd">                n_predict = np.sum(z)</span>
-<span class="sd">                n_target = self.inverse_activate_function(y[i])</span>
-
-<span class="sd">                # 修正するパーセプトロンを選択</span>
-<span class="sd">                index_list = self._search_index(a, n_target, n_predict)</span>
-
-<span class="sd">                if not len(index_list) == 0:</span>
-<span class="sd">                    self.W[index_list, :] += self.eta * np.sign(n_target - n_predict) * patterned_X[i]</span>
-<span class="sd">                self.a -= (self.a * n_predict + self.b - y[i]) * n_predict * 10 ** -6</span>
-<span class="sd">                self.b -= (self.a * n_predict + self.b - y[i]) * 10 ** -6</span>
-
-<span class="sd">            if self.verbose:</span>
-<span class="sd">                print(j, self.score(self.X_train_, self.y_train_))</span>
-
-<span class="sd">        return self</span>
-
-<span class="sd">    def predict(self, X):</span>
-<span class="sd">        check_is_fitted(self, [&quot;X_train_&quot;, &quot;y_train_&quot;])</span>
-<span class="sd">        prediction_list = []</span>
-
-<span class="sd">        intercepted_X = BaseEstimator.add_columns(X)</span>
-<span class="sd">        patterned_X = self.pattern_manager.num_to_pattern(intercepted_X)</span>
-
-<span class="sd">        for patterned_x in patterned_X:</span>
-<span class="sd">            a = np.dot(self.W, patterned_x)</span>
-<span class="sd">            z = self.hidden_function(a)</span>
-<span class="sd">            a2 = np.sum(z)</span>
-
-<span class="sd">            prediction = self.activate_function(a2)</span>
-<span class="sd">            prediction_list.append(prediction)</span>
-<span class="sd">        y = np.ravel(prediction_list)</span>
-<span class="sd">        return y</span>
-
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_pred : array-like, shape = (sample_num, )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intercepted_X</span> <span class="o">=</span> <span class="n">add_interception</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">code_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pc</span><span class="o">.</span><span class="n">coding</span><span class="p">(</span><span class="n">intercepted_X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">code_X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span></div></div>
 </pre></div>
 
            </div>

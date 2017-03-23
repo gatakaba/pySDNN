@@ -83,13 +83,11 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pysdnn package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.base_network">pysdnn.base_network module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.coding">pysdnn.coding module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.multi_layer_perceptron">pysdnn.multi_layer_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.parallel_perceptron">pysdnn.parallel_perceptron module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.sample_function">pysdnn.sample_function module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.selective_desensitization_neural_network">pysdnn.selective_desensitization_neural_network module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pysdnn-simple-perceptron-module">pysdnn.simple_perceptron module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pysdnn.utils">pysdnn.utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pysdnn">Module contents</a></li>
 </ul>
 </li>
@@ -141,6 +139,97 @@
 <h1>pysdnn package<a class="headerlink" href="#pysdnn-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pysdnn.base_network">
+<span id="pysdnn-base-network-module"></span><h2>pysdnn.base_network module<a class="headerlink" href="#module-pysdnn.base_network" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pysdnn.base_network.BaseNetwork">
+<em class="property">class </em><code class="descclassname">pysdnn.base_network.</code><code class="descname">BaseNetwork</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base_network.html#BaseNetwork"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base_network.BaseNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>Base NetworkクラスはPP,SDNNの抽象クラスです.</p>
+<p>本クラスはSDNN[R1]の第3-5層目の順伝播及び教師あり学習を用いた第3-4層の重み荷重調節機能を有します.</p>
+<table class="docutils citation" frame="void" id="r1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[R1]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>hidden_layer_num</strong> : int</p>
+<blockquote>
+<div><p>中間層の素子数</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool</p>
+<blockquote class="last">
+<div><p>詳細な出力を有効にする</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="pysdnn.base_network.BaseNetwork.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>learning_num</em>, <em>eta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base_network.html#BaseNetwork.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base_network.BaseNetwork.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the BaseNetwork model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (sample_num, input_dim)</p>
+<blockquote>
+<div><p>Training vectors.</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, shape = (sample_num,)</p>
+<blockquote>
+<div><p>Target values.</p>
+</div></blockquote>
+<p><strong>learning_num</strong> : int</p>
+<blockquote>
+<div><p>学習回数</p>
+</div></blockquote>
+<p><strong>eta</strong> : float</p>
+<blockquote>
+<div><p>学習率</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : object</p>
+<blockquote class="last">
+<div><p>Returns self.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.base_network.BaseNetwork.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base_network.html#BaseNetwork.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base_network.BaseNetwork.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform regression on samples in X.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array-like, shape = (sample_num,input_dim)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>y_pred</strong> : array-like, shape = (sample_num, )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pysdnn.base_network.BaseNetwork.score">
+<code class="descname">score</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/base_network.html#BaseNetwork.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.base_network.BaseNetwork.score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-pysdnn.coding">
 <span id="pysdnn-coding-module"></span><h2>pysdnn.coding module<a class="headerlink" href="#module-pysdnn.coding" title="Permalink to this headline">¶</a></h2>
@@ -284,78 +373,26 @@ for more information.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pysdnn.multi_layer_perceptron">
-<span id="pysdnn-multi-layer-perceptron-module"></span><h2>pysdnn.multi_layer_perceptron module<a class="headerlink" href="#module-pysdnn.multi_layer_perceptron" title="Permalink to this headline">¶</a></h2>
-<p>mlp</p>
-<dl class="class">
-<dt id="pysdnn.multi_layer_perceptron.MLP">
-<em class="property">class </em><code class="descclassname">pysdnn.multi_layer_perceptron.</code><code class="descname">MLP</code><span class="sig-paren">(</span><em>hidden_layer_num=100</em>, <em>eta=0.01</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code>, <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.RegressorMixin</span></code></p>
-<p class="rubric">Methods</p>
-<dl class="staticmethod">
-<dt id="pysdnn.multi_layer_perceptron.MLP.activate_function">
-<em class="property">static </em><code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MLP.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>n_iter=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MLP.get_params">
-<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.get_params" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pysdnn.multi_layer_perceptron.MLP.hidden_differential_function">
-<em class="property">static </em><code class="descname">hidden_differential_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.hidden_differential_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.hidden_differential_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pysdnn.multi_layer_perceptron.MLP.hidden_function">
-<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.hidden_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.multi_layer_perceptron.MLP.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/multi_layer_perceptron.html#MLP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.multi_layer_perceptron.MLP.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-pysdnn.parallel_perceptron">
 <span id="pysdnn-parallel-perceptron-module"></span><h2>pysdnn.parallel_perceptron module<a class="headerlink" href="#module-pysdnn.parallel_perceptron" title="Permalink to this headline">¶</a></h2>
-<p>Copyright (C) 2017 Yu Kabasawa</p>
-<p>This is licensed under an MIT license. See the readme.md file
-for more information.</p>
-<dl class="class">
-<dt id="pysdnn.parallel_perceptron.PP">
-<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">PP</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>is_pattern=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <p>PPは複数のパーセプトロンを並列に並べ,それらの出力値の総計に応じて最終的な出力決定する教師あり学習モデルである.</p>
-<p>PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,
-中間層から出力層の結合荷重を固定したものとみなすことができる.</p>
+<p>PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,中間層から出力層の結合荷重を固定したものとみなすことができる.</p>
+<dl class="class">
+<dt id="pysdnn.parallel_perceptron.PP_A">
+<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">PP_A</code><span class="sig-paren">(</span><em>PP-A : Parallel Peceptron Analogue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_A"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_A" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pysdnn.base_network.BaseNetwork" title="pysdnn.base_network.BaseNetwork"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base_network.BaseNetwork</span></code></a></p>
+<p>アナログパラレルパーセプトロンクラス(PP-A : Parallel Peceptron Analogue)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>hidden_layer_num</strong> : int</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>hidden_layer_num</strong> : int, optional (default = 280)</p>
 <blockquote>
-<div><p>中間層の素子数</p>
+<div><p>中間素子数</p>
 </div></blockquote>
-<p><strong>eta: float</strong></p>
-<blockquote>
-<div><p>学習係数</p>
-</div></blockquote>
-<p><strong>is_pattern</strong> : bool</p>
-<blockquote>
-<div><p>パターンコードに変換した値を入力に用いる</p>
-</div></blockquote>
-<p><strong>verbose</strong> : bool</p>
+<p><strong>verbose</strong> : bool, optional (default = False)</p>
 <blockquote class="last">
-<div><p>詳細な出力を有効にする</p>
+<div><p>詳細な出力を有効化</p>
 </div></blockquote>
 </td>
 </tr>
@@ -363,29 +400,144 @@ for more information.</p>
 </table>
 <p class="rubric">Methods</p>
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.PP.activate_function">
-<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pysdnn.parallel_perceptron.PP_A.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>learning_num=100</em>, <em>eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_A.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_A.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the SDNN model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (sample_num, input_dim)</p>
+<blockquote>
+<div><p>Training vectors.</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, shape = (sample_num,)</p>
+<blockquote>
+<div><p>Target values.</p>
+</div></blockquote>
+<p><strong>learning_num</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>学習回数</p>
+</div></blockquote>
+<p><strong>eta</strong> : float, optional (default = 0.001)</p>
+<blockquote>
+<div><p>学習率</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : object</p>
+<blockquote class="last">
+<div><p>Returns self.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.PP.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pysdnn.parallel_perceptron.PP_A.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_A.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_A.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform regression on samples in X.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array-like, shape = (sample_num,input_dim)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>y_pred</strong> : array-like, shape = (sample_num, )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pysdnn.parallel_perceptron.PP_P">
+<em class="property">class </em><code class="descclassname">pysdnn.parallel_perceptron.</code><code class="descname">PP_P</code><span class="sig-paren">(</span><em>PP-P : Parallel Peceptron Pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_P"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pysdnn.base_network.BaseNetwork" title="pysdnn.base_network.BaseNetwork"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base_network.BaseNetwork</span></code></a></p>
+<p>パターンパラレルパーセプトロンクラス(PP-P : Parallel Peceptron Pattern)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>code_pattern_dim</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>パターンコードベクトルの次元数 n</p>
+</div></blockquote>
+<p><strong>input_division_num</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>実数の分割数 q</p>
+</div></blockquote>
+<p><strong>reversal_num</strong> : int, optinal (default = 1)</p>
+<blockquote>
+<div><p>反転数 r</p>
+</div></blockquote>
+<p><strong>hidden_layer_num</strong> : int, optional (default = 280)</p>
+<blockquote>
+<div><p>中間素子数</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional (default = False)</p>
+<blockquote class="last">
+<div><p>詳細な出力を有効化</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="pysdnn.parallel_perceptron.PP_P.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>learning_num=100</em>, <em>eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_P.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_P.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the SDNN model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (sample_num, input_dim)</p>
+<blockquote>
+<div><p>Training vectors.</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, shape = (sample_num,)</p>
+<blockquote>
+<div><p>Target values.</p>
+</div></blockquote>
+<p><strong>learning_num</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>学習回数</p>
+</div></blockquote>
+<p><strong>eta</strong> : float, optional (default = 0.001)</p>
+<blockquote>
+<div><p>学習率</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : object</p>
+<blockquote class="last">
+<div><p>Returns self.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
-<dt id="pysdnn.parallel_perceptron.PP.inverse_activate_function">
-<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.parallel_perceptron.PP.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.parallel_perceptron.PP.score">
-<code class="descname">score</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP.score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pysdnn.parallel_perceptron.PP_P.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/parallel_perceptron.html#PP_P.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.parallel_perceptron.PP_P.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform regression on samples in X.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array-like, shape = (sample_num,input_dim)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>y_pred</strong> : array-like, shape = (sample_num, )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -480,17 +632,17 @@ for more information.</p>
 <dl class="function">
 <dt id="pysdnn.sample_function.nonaka">
 <code class="descclassname">pysdnn.sample_function.</code><code class="descname">nonaka</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/sample_function.html#nonaka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.sample_function.nonaka" title="Permalink to this definition">¶</a></dt>
-<dd><p>野中関数[R1]_</p>
+<dd><p>野中関数[R2]_</p>
 <div class="math">
 \[\begin{split}f(x,y) =
 \begin{cases}
     1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\
     \frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
 \end{cases}\end{split}\]</div>
-<table class="docutils citation" frame="void" id="r1" rules="none">
+<table class="docutils citation" frame="void" id="r2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[R1]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
+<tr><td class="label">[R2]</td><td>野中和明, 田中文英, and 森田昌彦. &#8220;階層型ニューラルネットの 2 変数関数近似能力の比較.&#8221; 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.</td></tr>
 </tbody>
 </table>
 <table class="docutils field-list" frame="void" rules="none">
@@ -516,184 +668,92 @@ for more information.</p>
 </div>
 <div class="section" id="module-pysdnn.selective_desensitization_neural_network">
 <span id="pysdnn-selective-desensitization-neural-network-module"></span><h2>pysdnn.selective_desensitization_neural_network module<a class="headerlink" href="#module-pysdnn.selective_desensitization_neural_network" title="Permalink to this headline">¶</a></h2>
-<p>Copyright (C) 2017 Yu Kabasawa</p>
-<p>This is licensed under an MIT license. See the readme.MD file
-for more information.</p>
 <dl class="class">
 <dt id="pysdnn.selective_desensitization_neural_network.SDNN">
-<em class="property">class </em><code class="descclassname">pysdnn.selective_desensitization_neural_network.</code><code class="descname">SDNN</code><span class="sig-paren">(</span><em>hidden_layer_num=300</em>, <em>eta=0.001</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<em class="property">class </em><code class="descclassname">pysdnn.selective_desensitization_neural_network.</code><code class="descname">SDNN</code><span class="sig-paren">(</span><em>SDNN : Selective Desensitization Neural Network</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pysdnn.base_network.BaseNetwork" title="pysdnn.base_network.BaseNetwork"><code class="xref py py-class docutils literal"><span class="pre">pysdnn.base_network.BaseNetwork</span></code></a></p>
+<p>選択的不感化ニューラルネットワーククラス(SDNN : Selective Desensitization Neural Network)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>code_pattern_dim</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>パターンコードベクトルの次元数 n</p>
+</div></blockquote>
+<p><strong>input_division_num</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>実数の分割数 q</p>
+</div></blockquote>
+<p><strong>reversal_num</strong> : int, optinal (default = 1)</p>
+<blockquote>
+<div><p>反転数 r</p>
+</div></blockquote>
+<p><strong>hidden_layer_num</strong> : int, optional (default = 280)</p>
+<blockquote>
+<div><p>中間素子数</p>
+</div></blockquote>
+<p><strong>verbose</strong> : bool, optional (default = False)</p>
+<blockquote class="last">
+<div><p>詳細な出力を有効化</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Methods</p>
 <dl class="method">
-<dt id="pysdnn.selective_desensitization_neural_network.SDNN.activate_function">
-<code class="descname">activate_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pysdnn.selective_desensitization_neural_network.SDNN.fit">
-<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.fit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pysdnn.selective_desensitization_neural_network.SDNN.hidden_function">
-<em class="property">static </em><code class="descname">hidden_function</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.hidden_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.hidden_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pysdnn.selective_desensitization_neural_network.SDNN.inverse_activate_function">
-<code class="descname">inverse_activate_function</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.inverse_activate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.inverse_activate_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>learning_num=100</em>, <em>eta=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the SDNN model according to the given training data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>X</strong> : array-like, shape = (sample_num, input_dim)</p>
+<blockquote>
+<div><p>Training vectors.</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, shape = (sample_num,)</p>
+<blockquote>
+<div><p>Target values.</p>
+</div></blockquote>
+<p><strong>learning_num</strong> : int, optional (default = 100)</p>
+<blockquote>
+<div><p>学習回数</p>
+</div></blockquote>
+<p><strong>eta</strong> : float, optional (default = 0.001)</p>
+<blockquote>
+<div><p>学習率</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>self</strong> : object</p>
+<blockquote class="last">
+<div><p>Returns self.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pysdnn.selective_desensitization_neural_network.SDNN.predict">
 <code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/selective_desensitization_neural_network.html#SDNN.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.selective_desensitization_neural_network.SDNN.predict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="pysdnn-simple-perceptron-module">
-<h2>pysdnn.simple_perceptron module<a class="headerlink" href="#pysdnn-simple-perceptron-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pysdnn.utils">
-<span id="pysdnn-utils-module"></span><h2>pysdnn.utils module<a class="headerlink" href="#module-pysdnn.utils" title="Permalink to this headline">¶</a></h2>
-<p>Copyright (C) 2017 Yu Kabasawa</p>
-<p>This is licensed under an MIT license. See the readme.md file
-for more information.</p>
-<dl class="function">
-<dt id="pysdnn.utils.add_columns">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">add_columns</code><span class="sig-paren">(</span><em>input_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.add_columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>切片を加える</p>
-<p>1を各データの末尾に加える</p>
-<div class="math">
-\[ \begin{align}\begin{aligned}\begin{split}X = \begin{pmatrix}
-                a &amp; b \\
-                c &amp; d \\
-                e &amp; f
-                \end{pmatrix}\end{split}\\\begin{split}inpteceptedX = \begin{pmatrix}
-                a &amp; b &amp; 1 \\
-                c &amp; d &amp; 1 \\
-                e &amp; f &amp; 1
-                \end{pmatrix}\end{split}\end{aligned}\end{align} \]</div>
+<dd><p>Perform regression on samples in X.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>input_array</strong> : array-like, shape = (samples_num, input_dim)</p>
-<blockquote>
-<div><p>入力データ</p>
-</div></blockquote>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> : array-like, shape = (sample_num,input_dim)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>intercepted_array</strong> : array of shape = (samples_num, input_dim + 1)</p>
-<blockquote class="last">
-<div><p>切片を加えられた入力データ</p>
-</div></blockquote>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>y_pred</strong> : array-like, shape = (sample_num, )</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="pysdnn.utils.inverse_scale">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">inverse_scale</code><span class="sig-paren">(</span><em>y</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#inverse_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.inverse_scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>線形スケーリング逆関数</p>
-<blockquote>
-<div><div class="math">
-\[x =  \frac{y-b}{a}\]</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote>
-<div><p>入力データ</p>
-</div></blockquote>
-<p><strong>a</strong> : float</p>
-<blockquote>
-<div><p>傾き</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote>
-<div><p>切片</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote class="last">
-<div><p>計算結果</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pysdnn.utils.scale">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">scale</code><span class="sig-paren">(</span><em>x</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.scale" title="Permalink to this definition">¶</a></dt>
-<dd><p>線形スケーリング関数</p>
-<div class="math">
-\[f(x) =  a x + b\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote>
-<div><p>入力データ</p>
-</div></blockquote>
-<p><strong>a</strong> : float</p>
-<blockquote>
-<div><p>傾き</p>
-</div></blockquote>
-<p><strong>b</strong> : float</p>
-<blockquote>
-<div><p>切片</p>
-</div></blockquote>
-<p><strong>Returns</strong></p>
-<p><strong>&#8212;&#8212;-</strong></p>
-<p><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote class="last">
-<div><p>計算結果</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pysdnn.utils.step">
-<code class="descclassname">pysdnn.utils.</code><code class="descname">step</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pysdnn/utils.html#step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pysdnn.utils.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>ステップ関数</p>
-<div class="math">
-\[\begin{split}f(x) =
-\begin{cases}
-    1 (x &gt; 0) \\
-    0.5 (x = 0) \\
-    0 (x &lt; 0)
-\end{cases}\end{split}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote>
-<div><p>入力データ</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>y</strong> : float or array-like, shape = (sample_num,)</p>
-<blockquote class="last">
-<div><p>計算結果</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>

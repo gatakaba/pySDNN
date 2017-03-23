@@ -1,18 +1,12 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
-""" Copyright (C) 2017 Yu Kabasawa
-
-This is licensed under an MIT license. See the readme.md file
-for more information.
-"""
-
 import numpy as np
 
 
-def add_columns(input_array):
+def add_interception(input_array):
     """ 切片を加える
 
-    1を各データの末尾に加える
+    各データの末尾に切片1を加える
 
     .. math::
 
@@ -42,75 +36,111 @@ def add_columns(input_array):
     intercepted_array = np.c_[input_array, np.ones(len(input_array))]
     return intercepted_array
 
-
-def step(x):
-    """ ステップ関数
-
-.. math::
-    f(x) =
-    \\begin{cases}
-        1 (x > 0) \\\\
-        0.5 (x = 0) \\\\
-        0 (x < 0)
-    \\end{cases}
-
-    Parameters
-    ----------
-    x : float or array-like, shape = (sample_num,)
-        入力データ
-
-    Returns
-    -------
-    y : float or array-like, shape = (sample_num,)
-        計算結果
-    """
-    y = (np.sign(x) + 1) / 2.0
-    return y
-
-
-def scale(x, a, b):
-    """ 線形スケーリング関数
+def linear(X):
+    """ 線形関数
 
     .. math::
-        f(x) =  a x + b
+        f(x) = \\sum_{i} x_{i}
 
     Parameters
     ----------
-    x : float or array-like, shape = (sample_num,)
+    X  : array-like, shape = (samples_num, input_dim)
         入力データ
-    a : float
-        傾き
-    b : float
-        切片
 
     Returns
     -------
-    y : float or array-like, shape = (sample_num,)
+    y : array-like, shape = (samples_num,)
         計算結果
     """
-    y = a * x + b
-    return y
+    return np.sum(X, axis=1)
 
 
-def inverse_scale(y, a, b):
-    """ 線形スケーリング逆関数
+def nonaka(X):
+    """ 野中関数[1]_
 
     .. math::
-        x =  \\frac{y-b}{a}
+        f(x,y) =
+        \\begin{cases}
+            1 ((x-0.5)^{2}+(y-0.5)^{2} \leq 0.04) \\\\
+            \\frac{1+x}{2}sin^{2}(6 \pi \sqrt{xy^{2}}) (otherwise)
+        \\end{cases}
+
+    .. [1] 野中和明, 田中文英, and 森田昌彦. "階層型ニューラルネットの 2 変数関数近似能力の比較." 電子情報通信学会論文誌 D 94.12 (2011): 2114-2125.
 
     Parameters
     ----------
-    y : float or array-like, shape = (sample_num,)
+    X  : array-like, shape = (samples_num, 2)
         入力データ
-    a : float
-        傾き
-    b : float
-        切片
+
 
     Returns
     -------
-    x : float or array-like, shape = (sample_num,)
+    y : array-like, shape = (samples_num,)
         計算結果
     """
-    x = (y - b) / a
-    return x
+
+    r = 0.2
+    if len(X.shape) == 1:
+        if (X[0] - 0.5) ** 2 + (X[1] - 0.5) ** 2 < r ** 2:
+            return 1
+        else:
+            return (1 + X[0]) / 2.0 * np.sin(6 * np.pi * X[0] ** 0.5 * X[1] ** 2) ** 2
+    t = []
+    for x in X:
+        if (x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2 < r ** 2:
+            t.append(1)
+        else:
+            t.append(
+                (1 + x[0]) / 2.0 * np.sin(6 * np.pi * x[0] ** 0.5 * x[1] ** 2) ** 2)
+    t = np.array(t)
+
+    return t
+
+
+def cylinder(X):
+    """ 円筒関数
+
+    .. math::
+        f(x,y) =
+        \\begin{cases}
+            1 ((x-0.5)^{2}+(y-0.5)^{2} < 0.04) \\\\
+            0 (otherwise)
+        \\end{cases}
+
+    Parameters
+    ----------
+    X  : array-like, shape = (samples_num, 2)
+        入力データ
+
+    Returns
+    -------
+    y : array-like, shape = (samples_num,)
+        計算結果
+    """
+    t = []
+    for x in X:
+        if (x[0] - 0.5) ** 2 + (x[1] - 0.5) ** 2 < 0.4 ** 2:
+            t.append(1.0)
+        else:
+            t.append(0.0)
+    return np.array(t)
+
+
+def gauss(X):
+    """ ガウス関数
+
+    .. math::
+        f(x,y) = \\exp(-(x-0.5)^{2} -(y-0.5)^{2})
+
+    Parameters
+    ----------
+    X  : array-like, shape = (samples_num, 2)
+        入力データ
+
+    Returns
+    -------
+    y : array-like, shape = (samples_num,)
+        計算結果
+    """
+
+    return np.exp(-(X[:, 0] - 0.5) ** 2 - (X[:, 1] - 0.5) ** 2)

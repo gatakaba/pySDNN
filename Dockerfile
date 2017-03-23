@@ -13,8 +13,8 @@ RUN pip install matplotlib
 RUN pip install sklearn
 RUN pip install seaborn
 RUN pip install ipywidgets
-RUN pip install git+https://github.com/gatakaba/pySDNN.git@develop
 
+RUN pip install git+https://github.com/gatakaba/pySDNN.git@develop
 WORKDIR /root
-RUN wget https://raw.githubusercontent.com/gatakaba/pySDNN/develop/notebook/fit_nonaka.ipynb
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
+

@@ -4,10 +4,10 @@
 import numpy as np
 import unittest
 
-from pysdnn import SDNN
+from pysdnn import BaseNetwork
 
 
-class TestSDNN(unittest.TestCase):
+class TestBaseNetwork(unittest.TestCase):
     def setUp(self):
         # make sample data
         n_train_samples = 20
@@ -18,11 +18,11 @@ class TestSDNN(unittest.TestCase):
         self.test_X = np.random.uniform(0, 1, size=[n_test_samples, 3])
         self.test_y = np.random.normal(size=n_train_samples)
 
+        self.bn = BaseNetwork()
+
     def test_fit(self):
-        self.sdnn = SDNN()
-        self.sdnn.fit(self.train_X, self.train_y)
+        self.bn.fit(self.train_X, self.train_y, 10, 0.001)
 
     def test_predict(self):
-        self.sdnn = SDNN()
-        self.sdnn.fit(self.train_X, self.train_y)
-        self.sdnn.predict(self.test_X)
+        self.bn.fit(self.train_X, self.train_y, 10, 0.001)
+        self.bn.predict(self.test_X)

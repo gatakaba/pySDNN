@@ -1,5 +1,10 @@
-from pysdnn.multi_layer_perceptron import MLP
-from pysdnn.selective_desensitization_neural_network import SDNN
+#! /usr/bin/env python
+# -*- coding:utf-8 -*-
 
-from pysdnn.parallel_perceptron import PP, PP_P
+from .base_network import BaseNetwork
+from .parallel_perceptron import PP_A, PP_P
+from .selective_desensitization_neural_network import SDNN
+
+
+# from pysdnn.multi_layer_perceptron import MLP
 # from simple_perceptron import SP
