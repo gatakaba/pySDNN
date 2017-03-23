@@ -6,9 +6,9 @@ PPは複数のパーセプトロンを並列に並べ,それらの出力値の�
 PPは3層のMLPにおいて,中間層の活性化関数をヘビサイド関数にし,中間層から出力層の結合荷重を固定したものとみなすことができる.
 """
 
-from pysdnn.base_network import BaseNetwork
-from pysdnn.coding import PatternCoding
-from pysdnn.utils import add_interception
+from .base_network import BaseNetwork
+from .coding import PatternCoding
+from .utils import add_interception
 
 
 class PP_A(BaseNetwork):

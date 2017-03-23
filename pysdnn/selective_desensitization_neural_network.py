@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from pysdnn.base_network import BaseNetwork
-from pysdnn.coding import SelectiveDesensitization
-from pysdnn.utils import add_interception
+from .base_network import BaseNetwork
+from .coding import SelectiveDesensitization
+from .utils import add_interception
 
 
 class SDNN(BaseNetwork):
